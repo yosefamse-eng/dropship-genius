@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "gen-lang-client-0721128056",
+    "site": "dropshipgenius",
     "public": "dist",
     "ignore": [
       "firebase.json",
