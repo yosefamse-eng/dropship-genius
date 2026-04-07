@@ -1,10 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
 
 export async function getProductRecommendations(niche: string, budget: string) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error("VITE_GEMINI_API_KEY is missing!");
-    return "Error: La clave de la IA no está configurada. Por favor, revisa los secretos en el menú de ajustes.";
+  // Use process.env.GEMINI_API_KEY as primary source (required by AI Studio/Gemini Skill)
+  // Fallback to import.meta.env.VITE_GEMINI_API_KEY for production builds on GitHub
+  const apiKey = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+  
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+    console.error("Gemini API Key is missing!");
+    return "Error: La clave de la IA no está configurada. Por favor, asegúrate de haber añadido VITE_GEMINI_API_KEY a los secretos de GitHub.";
   }
   
   const ai = new GoogleGenAI({ apiKey });
