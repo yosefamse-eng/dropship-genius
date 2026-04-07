@@ -34,6 +34,6 @@ export async function getProductRecommendations(niche: string, budget: string) {
     return response.text || "No se pudieron generar recomendaciones.";
   } catch (error) {
     console.error("Error calling Gemini:", error);
-    return "Hubo un error al conectar con la IA. Por favor, inténtalo de nuevo.";
+    return "Hubo un error al conectar con la IA de Google. Por favor, asegúrate de que la clave API esté configurada correctamente en los Secretos de GitHub y vuelve a intentarlo.";
   }
 }
