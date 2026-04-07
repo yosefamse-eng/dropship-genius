@@ -13,6 +13,13 @@ jobs:
         with:
           node-version: 22
       - run: npm install
+      - name: Check Secrets
+        run: |
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GEN_LANG_CLIENT_0721128056 }}" ]; then
+            echo "ERROR: La clave secreta FIREBASE_SERVICE_ACCOUNT_GEN_LANG_CLIENT_0721128056 no está configurada en GitHub."
+            echo "Por favor, ve a Settings > Secrets and variables > Actions y añádela."
+            exit 1
+          fi
       - run: npm run build
         env:
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
