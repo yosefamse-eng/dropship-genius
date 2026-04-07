@@ -15,9 +15,9 @@ jobs:
       - run: npm install
       - name: Check Secrets
         run: |
-          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GEN_LANG_CLIENT_0721128056 }}" ]; then
-            echo "ERROR: La clave secreta FIREBASE_SERVICE_ACCOUNT_GEN_LANG_CLIENT_0721128056 no está configurada en GitHub."
-            echo "Por favor, ve a Settings > Secrets and variables > Actions y añádela."
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" ]; then
+            echo "ERROR: La clave secreta FIREBASE_SERVICE_ACCOUNT no está configurada en GitHub."
+            echo "Por favor, ve a Settings > Secrets and variables > Actions y crea una nueva llamada FIREBASE_SERVICE_ACCOUNT."
             exit 1
           fi
       - run: npm run build
@@ -28,6 +28,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GEN_LANG_CLIENT_0721128056 }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
           projectId: dropshipgenius
