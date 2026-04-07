@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * Version: 1.0.2
+ * Version: 1.0.3
  */
 
 import React, { useState, useEffect } from 'react';
@@ -1124,6 +1124,9 @@ function MainApp() {
           <p className="text-slate-400 text-xs mt-2">
             Los datos proporcionados son estimaciones basadas en tendencias de mercado actuales.
           </p>
+          <div className="text-[10px] text-slate-300 font-mono mt-4">
+            v1.0.3-deploy-check
+          </div>
         </div>
       </footer>
     </div>
