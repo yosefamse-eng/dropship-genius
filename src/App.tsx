@@ -1300,7 +1300,7 @@ function MainApp() {
                       </div>
                       
                       <p className="text-slate-300 mb-8 max-w-2xl">
-                        Elige uno de los productos recomendados arriba, selecciona tu mercado objetivo y obtén un desglose detallado de precios, creativos publicitarios, demografía del público, costos y sentimiento social.
+                        Elige uno de los productos recomendados arriba, selecciona tu mercado objetivo y obtén un desglose detallado de precios, palabras clave (cola larga), volumen de búsqueda, intención del usuario, creativos publicitarios y costos.
                       </p>
 
                       <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col gap-4">
