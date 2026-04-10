@@ -38,7 +38,7 @@ export async function getProductRecommendations(niche: string, budget: string) {
   }
 }
 
-export async function getCompetitiveAnalysis(productName: string) {
+export async function getCompetitiveAnalysis(productName: string, region: string) {
   const apiKey = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
   
   if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
@@ -47,13 +47,14 @@ export async function getCompetitiveAnalysis(productName: string) {
   
   const ai = new GoogleGenAI({ apiKey });
   const prompt = `Actúa como un analista de mercado experto en e-commerce. 
-  Realiza un análisis competitivo profundo para el siguiente producto: "${productName}".
+  Realiza un análisis competitivo profundo para el siguiente producto: "${productName}" en la región: "${region}".
   
   Tu análisis DEBE incluir:
-  1. **Precios de la Competencia**: Rango de precios en Amazon, AliExpress y tiendas Shopify populares.
-  2. **Estrategias de Marketing**: Cómo lo están vendiendo los líderes (ej: anuncios de Facebook, colaboraciones con influencers, SEO).
-  3. **Sentimiento en Redes Sociales**: Qué dice la gente en TikTok, Instagram y Reddit sobre este tipo de producto (puntos positivos y quejas comunes).
-  4. **Oportunidad de Diferenciación**: Cómo puede un nuevo vendedor destacar frente a la competencia actual.
+  1. **Precios de la Competencia**: Rango de precios en Amazon, AliExpress y tiendas Shopify populares en ${region}.
+  2. **Estrategias de Marketing**: Cómo lo están vendiendo los líderes en esta región (ej: anuncios de Facebook, colaboraciones con influencers, SEO).
+  3. **Sentimiento en Redes Sociales**: Qué dice la gente en TikTok, Instagram y Reddit sobre este tipo de producto en ${region} (puntos positivos y quejas comunes).
+  4. **Costos Estimados de Marketing**: Un desglose de los costos potenciales para lanzar una campaña inicial en esta región (CPC promedio, presupuesto diario recomendado, etc.).
+  5. **Oportunidad de Diferenciación**: Cómo puede un nuevo vendedor destacar frente a la competencia actual en ${region}.
   
   Responde en un formato Markdown profesional, estructurado y en español. Usa emojis para hacer la lectura amena.`;
 

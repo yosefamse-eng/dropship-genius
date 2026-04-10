@@ -75,6 +75,7 @@ function MainApp() {
   const [competitiveResult, setCompetitiveResult] = useState<string | null>(null);
   const [analyzingCompetitors, setAnalyzingCompetitors] = useState(false);
   const [productToAnalyze, setProductToAnalyze] = useState('');
+  const [targetRegion, setTargetRegion] = useState('Global');
 
   const isProAccount = userData?.isPro || 
     user?.email === 'yosefamse@gmail.com' || 
@@ -479,7 +480,7 @@ function MainApp() {
     setCompetitiveResult(null);
 
     try {
-      const analysis = await getCompetitiveAnalysis(productToAnalyze);
+      const analysis = await getCompetitiveAnalysis(productToAnalyze, targetRegion);
       setCompetitiveResult(analysis);
       
       // Scroll to analysis
@@ -1132,31 +1133,47 @@ function MainApp() {
                       </div>
                       
                       <p className="text-slate-300 mb-8 max-w-2xl">
-                        Elige uno de los productos recomendados arriba y obtén un desglose detallado de precios, estrategias de marketing y lo que dicen los clientes en redes sociales.
+                        Elige uno de los productos recomendados arriba, selecciona tu mercado objetivo y obtén un desglose detallado de precios, estrategias de marketing, costos estimados y sentimiento social.
                       </p>
 
-                      <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col md:flex-row gap-4">
-                        <input 
-                          type="text" 
-                          placeholder="Nombre del producto a analizar..."
-                          className="flex-1 bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                          value={productToAnalyze}
-                          onChange={(e) => setProductToAnalyze(e.target.value)}
-                        />
+                      <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
+                          <input 
+                            type="text" 
+                            placeholder="Nombre del producto a analizar..."
+                            className="flex-1 bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                            value={productToAnalyze}
+                            onChange={(e) => setProductToAnalyze(e.target.value)}
+                          />
+                          <select 
+                            className="bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer"
+                            value={targetRegion}
+                            onChange={(e) => setTargetRegion(e.target.value)}
+                          >
+                            <option value="Global" className="bg-slate-900">Mercado Global</option>
+                            <option value="EE.UU." className="bg-slate-900">Estados Unidos</option>
+                            <option value="España" className="bg-slate-900">España</option>
+                            <option value="México" className="bg-slate-900">México</option>
+                            <option value="Colombia" className="bg-slate-900">Colombia</option>
+                            <option value="Chile" className="bg-slate-900">Chile</option>
+                            <option value="Europa" className="bg-slate-900">Europa (General)</option>
+                            <option value="Latinoamérica" className="bg-slate-900">Latinoamérica (General)</option>
+                          </select>
+                        </div>
                         <button 
                           type="submit"
                           disabled={analyzingCompetitors || !productToAnalyze}
-                          className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 text-white font-bold px-8 py-4 rounded-2xl transition-all flex items-center justify-center gap-2"
+                          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 text-white font-bold px-8 py-4 rounded-2xl transition-all flex items-center justify-center gap-2"
                         >
                           {analyzingCompetitors ? (
                             <>
                               <Loader2 className="w-5 h-5 animate-spin" />
-                              Analizando...
+                              Generando Informe Estratégico...
                             </>
                           ) : (
                             <>
                               <TrendingUp className="w-5 h-5" />
-                              Analizar Competencia
+                              Analizar Competencia y Costos
                             </>
                           )}
                         </button>
