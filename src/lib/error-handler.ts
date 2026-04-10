@@ -39,6 +39,12 @@ export const mapErrorToFriendlyMessage = (error: any): ErrorDetails => {
   }
 
   // Gemini / API Errors
+  if (errorMessage.includes('Rpc failed') || errorMessage.includes('xhr error') || errorMessage.includes('ProxyUnaryCall')) {
+    return {
+      message: 'Error de conexión con la IA. Por favor, intenta de nuevo en unos segundos.',
+      type: ErrorType.NETWORK
+    };
+  }
   if (errorMessage.includes('quota exceeded') || errorMessage.includes('429')) {
     return {
       message: 'Límite de IA alcanzado. Por favor, intenta de nuevo en unos minutos o mejora a PRO.',

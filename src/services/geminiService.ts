@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || (import.meta as any).env.VITE_GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function getProductRecommendations(niche: string, budget: string, salesChannel: string = 'General') {
   try {
@@ -30,7 +30,7 @@ export async function getProductRecommendations(niche: string, budget: string, s
     Devuelve SOLO el JSON, sin bloques de código ni texto adicional. Asegúrate de que el JSON sea válido.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-flash-latest",
       contents: prompt,
     });
     
@@ -69,7 +69,7 @@ export async function getCompetitiveAnalysis(productName: string, region: string
     Responde en un formato Markdown profesional, estructurado y en español. Usa emojis para hacer la lectura amena y tablas si es necesario para comparar palabras clave.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-flash-latest",
       contents: prompt,
     });
     
@@ -104,7 +104,7 @@ export async function getSupportChatResponse(userMessage: string, chatHistory: {
     `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-flash-latest",
       contents: [
         ...chatHistory.map((msg: any) => ({
           role: msg.role === 'user' ? 'user' : 'model',
