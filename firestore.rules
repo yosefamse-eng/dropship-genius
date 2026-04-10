@@ -46,6 +46,14 @@ service cloud.firestore {
       allow read: if isAdmin();
     }
 
+    match /support_chats/{chatId} {
+      allow read, write: if isOwner(chatId) || isAdmin();
+      
+      match /messages/{messageId} {
+        allow read, write: if isOwner(chatId) || isAdmin();
+      }
+    }
+
     match /{path=**} {
       allow read, write: if isAdmin();
     }

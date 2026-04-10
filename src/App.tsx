@@ -11,6 +11,7 @@ import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
 import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, handleFirestoreError, FirestoreOperationType, sendEmailVerification, reload, getMessagingInstance, getToken, onMessage } from './firebase';
 import { doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp, collection, addDoc, query, orderBy, limit } from 'firebase/firestore';
+import ChatSupport from './components/ChatSupport';
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
@@ -1484,6 +1485,8 @@ function MainApp() {
           </div>
         </div>
       </footer>
+
+      <ChatSupport />
     </div>
   );
 }

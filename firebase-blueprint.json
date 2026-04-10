@@ -55,6 +55,18 @@
         "timestamp": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "text", "timestamp"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Un mensaje individual en el chat de soporte.",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "isAdmin": { "type": "boolean" }
+      },
+      "required": ["senderId", "text", "timestamp"]
     }
   },
   "firestore": {
@@ -73,6 +85,10 @@
     "/detailed_feedback/{feedbackId}": {
       "schema": "DetailedFeedback",
       "description": "Colección global de comentarios detallados."
+    },
+    "/support_chats/{chatId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Mensajes en el chat de soporte."
     }
   }
 }
