@@ -88,6 +88,7 @@ function MainApp() {
   const [verificationSent, setVerificationSent] = useState(false);
   const [niche, setNiche] = useState('');
   const [budget, setBudget] = useState('bajo');
+  const [salesChannel, setSalesChannel] = useState('TikTok');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -560,7 +561,7 @@ function MainApp() {
   };
 
   const performSearch = async () => {
-    const cacheKey = `${niche}-${budget}`;
+    const cacheKey = `${niche}-${budget}-${salesChannel}`;
     if (recommendationCache[cacheKey]) {
       setResult(recommendationCache[cacheKey]);
       setLoading(false);
@@ -569,7 +570,7 @@ function MainApp() {
 
     setLoading(true);
     setResult(null);
-    const recommendations = await getProductRecommendations(niche, budget);
+    const recommendations = await getProductRecommendations(niche, budget, salesChannel);
     setResult(recommendations);
     
     // Update cache
@@ -584,6 +585,7 @@ function MainApp() {
         await addDoc(searchesRef, {
           niche,
           budget,
+          salesChannel,
           result: recommendations,
           timestamp: serverTimestamp()
         });
@@ -1322,7 +1324,7 @@ function MainApp() {
           className="bg-white/70 backdrop-blur-2xl p-10 rounded-[3.5rem] shadow-[0_32px_64px_-16px_rgba(79,70,229,0.2)] border border-white/50 mb-20 relative z-10 group"
         >
           <form onSubmit={handleSearch} className="relative z-10 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-3">
                 <label className="text-sm font-black text-slate-800 ml-2 uppercase tracking-widest flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
@@ -1357,6 +1359,26 @@ function MainApp() {
                     <option value="alto">Alto ($100 - $500)</option>
                     <option value="escala">Escala ($500 - $2000)</option>
                     <option value="agresivo">Agresivo ($2000+)</option>
+                  </select>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <label className="text-sm font-black text-slate-800 ml-2 uppercase tracking-widest flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                  Canal de Venta
+                </label>
+                <div className="relative group/input">
+                  <ShoppingBag className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within/input:text-indigo-500 transition-colors" />
+                  <select 
+                    className="w-full pl-14 pr-10 py-5 bg-white border border-slate-200 rounded-[1.5rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm appearance-none cursor-pointer"
+                    value={salesChannel}
+                    onChange={(e) => setSalesChannel(e.target.value)}
+                  >
+                    <option value="TikTok">TikTok (Viral/UGC)</option>
+                    <option value="Amazon">Amazon (SEO/PPC)</option>
+                    <option value="Shopify">Shopify (Marca Propia)</option>
+                    <option value="Facebook">Facebook (Intereses)</option>
+                    <option value="Instagram">Instagram (Influencers)</option>
                   </select>
                 </div>
               </div>

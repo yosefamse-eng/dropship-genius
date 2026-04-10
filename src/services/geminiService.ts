@@ -2,20 +2,23 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || (import.meta as any).env.VITE_GEMINI_API_KEY });
 
-export async function getProductRecommendations(niche: string, budget: string) {
+export async function getProductRecommendations(niche: string, budget: string, salesChannel: string = 'General') {
   try {
     const prompt = `Actúa como un experto en Dropshipping y comercio electrónico de alto nivel. 
-    El usuario busca recomendaciones de productos ganadores para el nicho: "${niche}" con un presupuesto de marketing de "${budget}".
+    El usuario busca recomendaciones de productos ganadores para el nicho: "${niche}" con un presupuesto de marketing de "${budget}" y enfocado principalmente en el canal de venta: "${salesChannel}".
+    
+    CRÍTICO: Prioriza productos que estén optimizados y tengan mayor potencial de éxito específicamente para el canal "${salesChannel}". 
+    Por ejemplo, si el canal es TikTok, prioriza productos con alto impacto visual y potencial viral. Si es Amazon, prioriza productos con buena demanda de búsqueda y potencial de SEO.
     
     Por favor, estructura tu respuesta de la siguiente manera para que sea fácil de escanear:
     
-    1. **Resumen Ejecutivo**: Un breve párrafo sobre el estado actual de este nicho.
-    2. **Tabla Comparativa de Productos**: Una tabla Markdown con las siguientes columnas: Producto, Nivel de Tendencia (1-10), Margen Estimado (%), Canal de Venta Ideal.
+    1. **Resumen Ejecutivo**: Un breve párrafo sobre el estado actual de este nicho y por qué el canal "${salesChannel}" es ideal (o qué desafíos presenta).
+    2. **Tabla Comparativa de Productos**: Una tabla Markdown con las siguientes columnas: Producto, Nivel de Tendencia (1-10), Margen Estimado (%), Ajuste con ${salesChannel} (1-10).
     3. **Análisis Detallado por Producto**: Para cada uno de los 3-5 productos recomendados, usa listas con viñetas para:
-       - **Por qué es ganador**: (Efecto WOW, resolución de problemas, etc.)
+       - **Por qué es ganador en ${salesChannel}**: (Efecto WOW, facilidad de creación de contenido, demanda de búsqueda, etc.)
        - **Público Objetivo**: Quién lo compra y por qué.
-       - **Estrategia de Marketing**: Pasos específicos (ej: "TikTok Ads con UGC", "Influencers de nicho").
-    4. **Consejo Maestro**: Un consejo final sobre cómo escalar este nicho específico.
+       - **Estrategia de Marketing Específica**: Pasos específicos para triunfar en "${salesChannel}" (ej: "TikTok Ads con UGC", "Amazon PPC", "Shopify SEO + Email Marketing").
+    4. **Consejo Maestro**: Un consejo final sobre cómo escalar este nicho específico usando "${salesChannel}".
     
     Responde en un formato Markdown impecable, profesional y en español. Usa negritas para resaltar términos clave.`;
 
