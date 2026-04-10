@@ -794,22 +794,16 @@ function MainApp() {
                 </div>
               </>
             ) : (
-              <div className="flex flex-col sm:flex-row items-center gap-2">
-                <button 
-                  onClick={handleGuestLogin}
-                  className="text-indigo-600 hover:text-indigo-700 font-bold text-xs px-3 py-2 rounded-xl transition-all"
-                >
-                  Modo Invitado
-                </button>
+              <div className="flex items-center gap-4">
                 <button 
                   onClick={handleLogin}
-                  className="flex flex-col items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-100 group"
+                  className="flex flex-col items-center bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-2xl transition-all shadow-xl shadow-brand-100 group"
                 >
-                  <div className="flex items-center gap-2 font-bold text-sm">
+                  <div className="flex items-center gap-2 font-black text-sm uppercase tracking-widest">
                     <LogIn className="w-4 h-4" />
                     Iniciar Sesión
                   </div>
-                  <span className="text-[10px] opacity-80 font-medium group-hover:opacity-100">+200 Créditos Gratis</span>
+                  <span className="text-[10px] opacity-80 font-bold group-hover:opacity-100">+200 Créditos Gratis</span>
                 </button>
               </div>
             )}
@@ -1411,44 +1405,51 @@ function MainApp() {
                         Elige uno de los productos recomendados arriba, selecciona tu mercado objetivo y obtén un desglose detallado de precios, palabras clave (cola larga), volumen de búsqueda, intención del usuario, creativos publicitarios y costos.
                       </p>
 
-                      <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col gap-4">
+                      <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col gap-6">
                         <div className="flex flex-col md:flex-row gap-4">
-                          <input 
-                            type="text" 
-                            placeholder="Nombre del producto a analizar..."
-                            className="flex-1 bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                            value={productToAnalyze}
-                            onChange={(e) => setProductToAnalyze(e.target.value)}
-                          />
-                          <select 
-                            className="bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer"
-                            value={targetRegion}
-                            onChange={(e) => setTargetRegion(e.target.value)}
-                          >
-                            <option value="Global" className="bg-slate-900">Mercado Global</option>
-                            <option value="EE.UU." className="bg-slate-900">Estados Unidos</option>
-                            <option value="España" className="bg-slate-900">España</option>
-                            <option value="México" className="bg-slate-900">México</option>
-                            <option value="Colombia" className="bg-slate-900">Colombia</option>
-                            <option value="Chile" className="bg-slate-900">Chile</option>
-                            <option value="Europa" className="bg-slate-900">Europa (General)</option>
-                            <option value="Latinoamérica" className="bg-slate-900">Latinoamérica (General)</option>
-                          </select>
+                          <div className="flex-1 relative group/input">
+                            <ShoppingBag className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 group-focus-within/input:text-brand-400 transition-colors" />
+                            <input 
+                              type="text" 
+                              placeholder="Nombre del producto..."
+                              className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-6 py-5 text-white placeholder:text-slate-500 outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
+                              value={productToAnalyze}
+                              onChange={(e) => setProductToAnalyze(e.target.value)}
+                            />
+                          </div>
+                          <div className="relative group/input">
+                            <Target className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 group-focus-within/input:text-brand-400 transition-colors" />
+                            <select 
+                              className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-12 py-5 text-white outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none cursor-pointer"
+                              value={targetRegion}
+                              onChange={(e) => setTargetRegion(e.target.value)}
+                            >
+                              <option value="Global" className="bg-slate-900">Mercado Global</option>
+                              <option value="EE.UU." className="bg-slate-900">Estados Unidos</option>
+                              <option value="España" className="bg-slate-900">España</option>
+                              <option value="México" className="bg-slate-900">México</option>
+                              <option value="Colombia" className="bg-slate-900">Colombia</option>
+                              <option value="Chile" className="bg-slate-900">Chile</option>
+                              <option value="Europa" className="bg-slate-900">Europa (General)</option>
+                              <option value="Latinoamérica" className="bg-slate-900">Latinoamérica (General)</option>
+                            </select>
+                          </div>
                         </div>
                         <button 
                           type="submit"
                           disabled={analyzingCompetitors || !productToAnalyze}
-                          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 text-white font-bold px-8 py-4 rounded-2xl transition-all flex items-center justify-center gap-2"
+                          className="w-full bg-brand-600 hover:bg-brand-700 disabled:bg-slate-800 text-white font-black text-lg py-6 rounded-[1.5rem] transition-all shadow-xl shadow-brand-900/20 flex items-center justify-center gap-3 overflow-hidden relative group/btn"
                         >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer" />
                           {analyzingCompetitors ? (
                             <>
-                              <Loader2 className="w-5 h-5 animate-spin" />
-                              Generando Informe Estratégico...
+                              <Loader2 className="w-6 h-6 animate-spin" />
+                              <span>Generando Informe Estratégico...</span>
                             </>
                           ) : (
                             <>
-                              <TrendingUp className="w-5 h-5" />
-                              Analizar Competencia y Costos
+                              <TrendingUp className="w-6 h-6 group-hover/btn:scale-110 transition-transform" />
+                              <span>Analizar Competencia y Costos</span>
                             </>
                           )}
                         </button>
@@ -1897,16 +1898,34 @@ function MainApp() {
         </AnimatePresence>
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-12 mt-20">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-slate-500 text-sm">
-            © 2026 DropshipGenius AI. Impulsado por Google Gemini.
-          </p>
-          <p className="text-slate-400 text-xs mt-2">
-            Los datos proporcionados son estimaciones basadas en tendencias de mercado actuales.
-          </p>
-          <div className="text-[10px] text-slate-300 font-mono mt-4">
-            v1.1.1-deploy-check
+      <footer className="bg-white border-t border-slate-200 py-16 mt-20">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+            <div className="flex items-center gap-2">
+              <div className="bg-brand-600 p-2 rounded-xl">
+                <ShoppingBag className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-black text-slate-900 tracking-tighter">DropshipGenius <span className="text-brand-600">IA</span></span>
+            </div>
+            {!user && (
+              <button 
+                onClick={handleGuestLogin}
+                className="text-slate-400 hover:text-brand-600 font-bold text-xs uppercase tracking-widest transition-all"
+              >
+                Acceder como Invitado
+              </button>
+            )}
+          </div>
+          <div className="text-center border-t border-slate-100 pt-8">
+            <p className="text-slate-500 text-sm">
+              © 2026 DropshipGenius AI. Impulsado por Google Gemini.
+            </p>
+            <p className="text-slate-400 text-xs mt-2">
+              Los datos proporcionados son estimaciones basadas en tendencias de mercado actuales.
+            </p>
+            <div className="text-[10px] text-slate-300 font-mono mt-4">
+              v1.1.2-premium-ux
+            </div>
           </div>
         </div>
       </footer>
