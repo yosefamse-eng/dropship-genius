@@ -703,9 +703,34 @@ function MainApp() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
       {/* Decorative Background */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100/40 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-50/40 rounded-full blur-[120px]" />
-        <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-blue-50/30 rounded-full blur-[80px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-200/30 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-100/30 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-blue-100/20 rounded-full blur-[100px]" />
+      </div>
+
+      {/* Floating 3D-like elements */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div 
+          animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-40 left-[10%] opacity-20"
+        >
+          <ShoppingBag className="w-16 h-16 text-brand-600" />
+        </motion.div>
+        <motion.div 
+          animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-60 right-[15%] opacity-20"
+        >
+          <TrendingUp className="w-20 h-20 text-emerald-500" />
+        </motion.div>
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-40 left-[20%] opacity-10"
+        >
+          <Sparkles className="w-24 h-24 text-brand-400" />
+        </motion.div>
       </div>
 
       {/* Header */}
@@ -1136,10 +1161,28 @@ function MainApp() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed"
+            className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10"
           >
             Analizamos miles de tendencias globales en tiempo real para recomendarte productos con alto margen y baja competencia.
           </motion.p>
+
+          {/* Live Activity Ticker */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex items-center justify-center gap-4 text-xs font-bold text-slate-400 mb-12"
+          >
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map(i => (
+                <img key={i} src={`https://picsum.photos/seed/user${i}/32/32`} className="w-6 h-6 rounded-full border-2 border-white" referrerPolicy="no-referrer" />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>42 personas buscando productos ahora mismo</span>
+            </div>
+          </motion.div>
         </div>
 
         {/* Search Form */}
@@ -1147,37 +1190,43 @@ function MainApp() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white p-10 rounded-[3rem] shadow-2xl shadow-indigo-100/50 border border-slate-100 mb-20 relative z-10"
+          className="bg-white/70 backdrop-blur-2xl p-10 rounded-[3.5rem] shadow-[0_32px_64px_-16px_rgba(79,70,229,0.2)] border border-white/50 mb-20 relative z-10 group"
         >
-          <form onSubmit={handleSearch} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 ml-1">¿En qué nicho estás interesado?</label>
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+          <form onSubmit={handleSearch} className="relative z-10 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-sm font-black text-slate-800 ml-2 uppercase tracking-widest flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                  Nicho de Mercado
+                </label>
+                <div className="relative group/input">
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within/input:text-brand-500 transition-colors" />
                   <input 
                     type="text" 
                     placeholder="Ej: Accesorios para gatos, Cocina saludable..."
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                    className="w-full pl-14 pr-6 py-5 bg-white border border-slate-200 rounded-[1.5rem] focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all shadow-sm"
                     value={niche}
                     onChange={(e) => setNiche(e.target.value)}
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Presupuesto de Marketing</label>
-                <select 
-                  className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all appearance-none"
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                >
-                  <option value="micro">Micro (Menos de $50)</option>
-                  <option value="muy_bajo">Muy Bajo ($50 - $200)</option>
-                  <option value="bajo">Bajo ($200 - $500)</option>
-                  <option value="medio">Medio ($500 - $2000)</option>
-                  <option value="alto">Alto ($2000 - $5000)</option>
-                  <option value="premium">Premium (Más de $5000)</option>
-                </select>
+              <div className="space-y-3">
+                <label className="text-sm font-black text-slate-800 ml-2 uppercase tracking-widest flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  Presupuesto Diario
+                </label>
+                <div className="relative group/input">
+                  <DollarSign className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within/input:text-emerald-500 transition-colors" />
+                  <select 
+                    className="w-full pl-14 pr-10 py-5 bg-white border border-slate-200 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all shadow-sm appearance-none cursor-pointer"
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                  >
+                    <option value="bajo">Bajo ($10 - $30)</option>
+                    <option value="medio">Medio ($30 - $100)</option>
+                    <option value="alto">Alto ($100+)</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -1187,10 +1236,10 @@ function MainApp() {
                   key={n}
                   type="button"
                   onClick={() => setNiche(n)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
                     niche === n 
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-200' 
+                    : 'bg-white text-slate-500 hover:bg-brand-50 hover:text-brand-600 border border-slate-100'
                   }`}
                 >
                   {n}
@@ -1199,19 +1248,20 @@ function MainApp() {
             </div>
 
             <button 
-              type="submit"
+              type="submit" 
               disabled={loading || !niche || (user !== null && !isEmailVerified)}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2 text-lg"
+              className="w-full py-6 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white font-black text-lg rounded-[1.5rem] transition-all shadow-xl shadow-brand-200 hover:shadow-brand-300 hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 group/btn overflow-hidden relative"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-shimmer" />
               {loading ? (
                 <>
                   <Loader2 className="w-6 h-6 animate-spin" />
-                  Analizando mercado...
+                  <span>Analizando Tendencias...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-6 h-6" />
-                  {user ? (isEmailVerified ? 'Generar Recomendaciones IA' : 'Verifica tu correo para continuar') : `Probar Gratis (${localCredits / 20} Búsquedas)`}
+                  <Sparkles className="w-6 h-6 group-hover/btn:rotate-12 transition-transform" />
+                  <span>{user ? (isEmailVerified ? 'Descubrir Productos Ganadores' : 'Verifica tu correo para continuar') : `Probar Gratis (${localCredits / 20} Búsquedas)`}</span>
                 </>
               )}
             </button>
@@ -1538,6 +1588,57 @@ function MainApp() {
                 <p className="text-xs text-slate-400 font-medium italic">"Recibí una alerta de un gadget de cocina y escalé a $2k/día en una semana."</p>
               </div>
             </motion.div>
+          </div>
+        )}
+
+        {/* Testimonials Section */}
+        {!result && !loading && (
+          <div className="mb-32 relative z-10">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-black text-slate-900 mb-4">Lo que dicen los <span className="text-brand-600">Genios</span></h2>
+              <p className="text-slate-500">Cientos de emprendedores ya están escalando sus tiendas.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                {
+                  name: "Carlos R.",
+                  role: "Dropshipper 7-figuras",
+                  text: "DropshipGenius me ahorra horas de investigación. El primer producto que analicé me generó $500 en ventas el primer día.",
+                  avatar: "https://picsum.photos/seed/carlos/100/100"
+                },
+                {
+                  name: "Elena M.",
+                  role: "E-commerce Manager",
+                  text: "La precisión de la IA para detectar tendencias en TikTok es increíble. Es como tener un equipo de analistas trabajando 24/7.",
+                  avatar: "https://picsum.photos/seed/elena/100/100"
+                },
+                {
+                  name: "Javier S.",
+                  role: "Emprendedor Digital",
+                  text: "El análisis de competencia y costos es lo que marca la diferencia. Ahora sé exactamente cuánto puedo gastar en ads.",
+                  avatar: "https://picsum.photos/seed/javier/100/100"
+                }
+              ].map((t, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 relative"
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full border-2 border-brand-100" referrerPolicy="no-referrer" />
+                    <div>
+                      <p className="font-black text-slate-900 leading-none">{t.name}</p>
+                      <p className="text-xs text-brand-600 font-bold mt-1">{t.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-slate-600 italic leading-relaxed">"{t.text}"</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         )}
 

@@ -40,6 +40,15 @@
   .bento-inner {
     @apply h-full w-full rounded-[2.5rem] p-8 transition-all duration-500 hover:scale-[1.02];
   }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
 }
 
 @layer base {
