@@ -15,6 +15,8 @@
         "dailySearchCount": { "type": "integer", "description": "Número de búsquedas realizadas hoy." },
         "lastSearchDate": { "type": "string", "format": "date", "description": "Fecha de la última búsqueda realizada." },
         "fcmToken": { "type": "string", "description": "Token de Firebase Cloud Messaging para notificaciones push." },
+        "notificationsEnabled": { "type": "boolean", "description": "Indica si el usuario desea recibir notificaciones push." },
+        "notificationFrequency": { "type": "string", "enum": ["daily", "weekly", "monthly"], "description": "Frecuencia de las notificaciones de tendencias." },
         "createdAt": { "type": "string", "format": "date-time", "description": "Fecha de creación de la cuenta." }
       },
       "required": ["uid", "email", "credits", "isPro"]

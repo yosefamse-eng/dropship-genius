@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check } from 'lucide-react';
+import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
@@ -88,6 +88,7 @@ function MainApp() {
   const [targetRegion, setTargetRegion] = useState('Global');
   const [feedbackStatus, setFeedbackStatus] = useState<{[key: string]: 'up' | 'down' | null}>({});
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
@@ -225,6 +226,8 @@ function MainApp() {
               credits: isAdmin ? 999999 : 200,
               isPro: isAdmin,
               role: isAdmin ? 'admin' : 'user',
+              notificationsEnabled: false,
+              notificationFrequency: 'weekly',
               createdAt: serverTimestamp()
             });
           }
@@ -618,6 +621,40 @@ function MainApp() {
     }
   };
 
+  const handleToggleNotifications = async (enabled: boolean) => {
+    if (!user || (user as any).isGuest) return;
+    const userRef = doc(db, 'users', user.uid);
+    try {
+      if (enabled) {
+        // Trigger permission request if enabling
+        if ('Notification' in window && Notification.permission !== 'granted') {
+          const permission = await Notification.requestPermission();
+          if (permission !== 'granted') {
+            alert("Para recibir notificaciones, debes permitir los permisos en tu navegador.");
+            return;
+          }
+        }
+      }
+      await updateDoc(userRef, {
+        notificationsEnabled: enabled
+      });
+    } catch (error) {
+      console.error("Error updating notification settings:", error);
+    }
+  };
+
+  const handleUpdateFrequency = async (frequency: string) => {
+    if (!user || (user as any).isGuest) return;
+    const userRef = doc(db, 'users', user.uid);
+    try {
+      await updateDoc(userRef, {
+        notificationFrequency: frequency
+      });
+    } catch (error) {
+      console.error("Error updating notification frequency:", error);
+    }
+  };
+
   const niches = [
     "Hogar y Cocina", "Belleza y Cuidado Personal", "Mascotas", 
     "Fitness y Salud", "Gadgets Tecnológicos", "Moda y Accesorios",
@@ -640,16 +677,25 @@ function MainApp() {
           
           <div className="flex items-center gap-4">
             {user && (
-              <button 
-                onClick={() => setShowHistory(true)}
-                className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative"
-                title="Historial de búsquedas"
-              >
-                <History className="w-5 h-5" />
-                {searchHistory.length > 0 && (
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-indigo-600 rounded-full border-2 border-white" />
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setShowSettingsModal(true)}
+                  className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                  title="Configuración de notificaciones"
+                >
+                  <Bell className={`w-5 h-5 ${(userData as any)?.notificationsEnabled ? 'text-indigo-600 fill-indigo-100' : ''}`} />
+                </button>
+                <button 
+                  onClick={() => setShowHistory(true)}
+                  className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative"
+                  title="Historial de búsquedas"
+                >
+                  <History className="w-5 h-5" />
+                  {searchHistory.length > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-indigo-600 rounded-full border-2 border-white" />
+                  )}
+                </button>
+              </div>
             )}
             {user ? (
               <>
@@ -1449,6 +1495,84 @@ function MainApp() {
             ))}
           </div>
         </div>
+        {/* Settings Modal */}
+        <AnimatePresence>
+          {showSettingsModal && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[60] flex items-center justify-center p-4"
+            >
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden"
+              >
+                <button 
+                  onClick={() => setShowSettingsModal(false)}
+                  className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+
+                <div className="bg-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200">
+                  <Bell className="w-6 h-6 text-white" />
+                </div>
+
+                <h2 className="text-2xl font-black text-slate-900 mb-2">Notificaciones Push</h2>
+                <p className="text-slate-500 mb-8">Recibe alertas sobre nuevas tendencias de nicho detectadas por nuestra IA.</p>
+
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div>
+                      <p className="font-bold text-slate-800">Activar Notificaciones</p>
+                      <p className="text-xs text-slate-500">Alertas en tiempo real</p>
+                    </div>
+                    <button 
+                      onClick={() => handleToggleNotifications(!(userData as any)?.notificationsEnabled)}
+                      className={`w-12 h-6 rounded-full transition-all relative ${ (userData as any)?.notificationsEnabled ? 'bg-indigo-600' : 'bg-slate-300' }`}
+                    >
+                      <motion.div 
+                        animate={{ x: (userData as any)?.notificationsEnabled ? 24 : 4 }}
+                        className="absolute top-1 left-0 w-4 h-4 bg-white rounded-full shadow-sm"
+                      />
+                    </button>
+                  </div>
+
+                  {(userData as any)?.notificationsEnabled && (
+                    <div className="space-y-3">
+                      <p className="text-sm font-bold text-slate-700 px-1">Frecuencia de Alertas</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['daily', 'weekly', 'monthly'].map((freq) => (
+                          <button
+                            key={freq}
+                            onClick={() => handleUpdateFrequency(freq)}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all capitalize ${
+                              (userData as any)?.notificationFrequency === freq 
+                                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100' 
+                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            }`}
+                          >
+                            {freq === 'daily' ? 'Diario' : freq === 'weekly' ? 'Semanal' : 'Mensual'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <button 
+                    onClick={() => setShowSettingsModal(false)}
+                    className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-slate-800 transition-all mt-4"
+                  >
+                    Guardar y Cerrar
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Feedback Modal */}
         <AnimatePresence>
           {showFeedbackModal && (
