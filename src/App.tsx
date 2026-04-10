@@ -969,10 +969,24 @@ function MainApp() {
                     Nuestra IA está procesando los datos del mercado para encontrarte los mejores productos. Este proceso toma unos segundos.
                   </p>
 
-                  <div className="bg-indigo-50/50 rounded-3xl p-8 mb-8 flex flex-col items-center justify-center border border-indigo-100">
-                    <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
-                    <p className="text-indigo-900 font-bold">Analizando tendencias...</p>
-                    <p className="text-xs text-indigo-600 mt-2">Suscríbete a PRO para saltar esta espera</p>
+                  <div className="bg-indigo-50/50 rounded-[2.5rem] p-12 mb-8 flex flex-col items-center justify-center border border-indigo-100 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent animate-pulse" />
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      className="relative"
+                    >
+                      <Loader2 className="w-16 h-16 text-indigo-600" />
+                      <div className="absolute inset-0 blur-xl bg-indigo-400/30 animate-pulse" />
+                    </motion.div>
+                    <motion.p 
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="text-indigo-900 font-black text-xl mt-6 relative z-10"
+                    >
+                      Analizando Tendencias Globales...
+                    </motion.p>
+                    <p className="text-xs text-indigo-600 mt-2 font-bold tracking-widest uppercase opacity-60">IA Generativa en proceso</p>
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -1334,106 +1348,190 @@ function MainApp() {
           {result && (
             <div className="space-y-12 relative z-10">
               <motion.div 
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -40 }}
-                className="relative bg-white rounded-[3rem] p-8 md:p-16 shadow-[0_32px_64px_-16px_rgba(79,70,229,0.15)] border border-indigo-50 overflow-hidden"
+                initial={{ opacity: 0, scale: 0.95, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -40 }}
+                transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                className="relative bg-white/80 backdrop-blur-xl rounded-[3.5rem] p-8 md:p-16 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.2)] border border-white/50 overflow-hidden"
               >
                 {/* Decorative background elements */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-50/40 rounded-full -mr-48 -mt-48 blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-50/40 rounded-full -ml-48 -mb-48 blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-100/30 rounded-full -mr-64 -mt-64 blur-[100px] pointer-events-none animate-pulse" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-100/20 rounded-full -ml-64 -mb-64 blur-[100px] pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
 
-                <div className="relative flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8 pb-10 border-b border-slate-100">
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="relative flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8 pb-10 border-b border-slate-100/50"
+                >
                   <div className="flex items-center gap-6">
-                    <div className="bg-gradient-to-br from-brand-500 to-indigo-700 p-4 rounded-[1.5rem] shadow-xl shadow-brand-100">
-                      <TrendingUp className="w-8 h-8 text-white" />
-                    </div>
+                    <motion.div 
+                      whileHover={{ scale: 1.05, rotate: 5 }}
+                      className="bg-gradient-to-br from-brand-600 to-indigo-800 p-5 rounded-[2rem] shadow-2xl shadow-brand-200"
+                    >
+                      <TrendingUp className="w-10 h-10 text-white" />
+                    </motion.div>
                     <div>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[10px] font-black uppercase tracking-widest border border-brand-100">
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className="px-4 py-1.5 rounded-full bg-brand-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
                           {niche}
                         </span>
-                        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                          PRESUPUESTO {budget}
+                        <span className="px-4 py-1.5 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
+                          {budget.replace('_', ' ')}
                         </span>
                       </div>
-                      <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-                        Informe Estratégico
+                      <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-none">
+                        Análisis <span className="text-gradient">Estratégico</span>
                       </h2>
                     </div>
                   </div>
-                  <button 
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleShare}
-                    className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-slate-200 hover:shadow-indigo-200 group"
+                    className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl font-black text-sm transition-all shadow-xl shadow-slate-200 hover:shadow-indigo-200 group"
                   >
                     {copied ? (
                       <>
-                        <Check className="w-4 h-4 text-emerald-400" />
-                        ¡Copiado!
+                        <Check className="w-5 h-5 text-emerald-400" />
+                        ¡COPIADO!
                       </>
                     ) : (
                       <>
-                        <Share2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        Compartir Éxito
+                        <Share2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                        COMPARTIR ÉXITO
                       </>
                     )}
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
                 
-                <div className="relative prose prose-slate max-w-none 
-                  prose-headings:text-indigo-600 prose-headings:font-black prose-headings:tracking-tight
-                  prose-strong:text-slate-900 prose-strong:font-bold
-                  prose-p:text-slate-600 prose-p:leading-relaxed prose-p:text-lg
-                  prose-li:text-slate-600 prose-li:text-lg
-                  prose-img:rounded-3xl prose-img:shadow-lg
-                  prose-blockquote:border-l-4 prose-blockquote:border-indigo-500 prose-blockquote:bg-indigo-50/50 prose-blockquote:p-4 prose-blockquote:rounded-r-2xl prose-blockquote:italic">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="relative prose prose-slate max-w-none 
+                  prose-headings:text-indigo-700 prose-headings:font-black prose-headings:tracking-tight prose-headings:mb-6
+                  prose-strong:text-slate-900 prose-strong:font-black prose-strong:bg-indigo-50 prose-strong:px-1 prose-strong:rounded
+                  prose-p:text-slate-700 prose-p:leading-relaxed prose-p:text-xl prose-p:mb-8 prose-p:font-serif
+                  prose-li:text-slate-700 prose-li:text-lg prose-li:mb-2 prose-li:font-serif
+                  prose-img:rounded-[2.5rem] prose-img:shadow-2xl prose-img:my-12
+                  prose-blockquote:border-l-0 prose-blockquote:bg-slate-900 prose-blockquote:text-white prose-blockquote:p-10 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:font-serif prose-blockquote:text-2xl prose-blockquote:relative prose-blockquote:my-12 prose-blockquote:overflow-hidden prose-blockquote:shadow-2xl"
+                >
                   <MemoizedMarkdown content={result} />
-                </div>
+                </motion.div>
 
-                {/* Feedback Buttons */}
-                <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-bold text-slate-500">¿Te fue útil este análisis?</span>
-                    <div className="flex gap-2">
-                      <button 
+                {/* Key Metrics Grid - Bento Style */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-20 grid grid-cols-1 md:grid-cols-6 gap-6"
+                >
+                  <motion.div 
+                    whileHover={{ y: -8, scale: 1.01 }}
+                    className="md:col-span-3 bg-gradient-to-br from-emerald-50 to-white p-10 rounded-[2.5rem] border border-emerald-100 shadow-xl shadow-emerald-100/20 group relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-200/20 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="bg-emerald-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-emerald-100">
+                      <DollarSign className="w-8 h-8 text-white" />
+                    </div>
+                    <h4 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Rentabilidad Estimada</h4>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Márgenes optimizados del 30-50% tras costes de adquisición y envío en {niche}.
+                    </p>
+                    <div className="mt-8 flex items-center gap-2">
+                      <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: '85%' }}
+                          transition={{ duration: 1.5, delay: 1 }}
+                          className="h-full bg-emerald-500" 
+                        />
+                      </div>
+                      <span className="text-sm font-black text-emerald-600">85%</span>
+                    </div>
+                  </motion.div>
+
+                  <motion.div 
+                    whileHover={{ y: -8, scale: 1.01 }}
+                    className="md:col-span-3 bg-gradient-to-br from-indigo-50 to-white p-10 rounded-[2.5rem] border border-indigo-100 shadow-xl shadow-indigo-100/20 group relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-200/20 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="bg-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-indigo-100">
+                      <Target className="w-8 h-8 text-white" />
+                    </div>
+                    <h4 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Segmentación Precisa</h4>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Nichos de "océano azul" con baja competencia publicitaria detectados por IA.
+                    </p>
+                    <div className="mt-8 flex flex-wrap gap-2">
+                      {['Gen Z', 'Techies', 'Eco-friendly'].map(tag => (
+                        <span key={tag} className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-wider">{tag}</span>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  <motion.div 
+                    whileHover={{ y: -8, scale: 1.01 }}
+                    className="md:col-span-6 bg-slate-900 p-10 rounded-[2.5rem] border border-slate-800 shadow-2xl shadow-slate-900/40 group relative overflow-hidden text-white"
+                  >
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="flex flex-col md:flex-row md:items-center gap-10">
+                      <div className="bg-brand-500 w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl shadow-brand-500/20 shrink-0">
+                        <Rocket className="w-10 h-10 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-3xl font-black mb-4 tracking-tight">Escalabilidad de Negocio</h4>
+                        <p className="text-slate-400 leading-relaxed text-xl max-w-3xl">
+                          Potencial de crecimiento vertical mediante la creación de marca propia y expansión a marketplaces globales.
+                        </p>
+                      </div>
+                      <div className="md:ml-auto flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Potencial</p>
+                          <p className="text-4xl font-black text-brand-400">ALTO</p>
+                        </div>
+                        <div className="w-16 h-16 rounded-full border-4 border-brand-500/20 border-t-brand-500 animate-spin" />
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+
+                {/* Feedback Section */}
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-12 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6"
+                >
+                  <div className="flex items-center gap-6">
+                    <span className="text-sm font-black text-slate-400 uppercase tracking-widest">¿Análisis Útil?</span>
+                    <div className="flex gap-3">
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => handleRateResult('main_result', 'up')}
-                        className={`p-2 rounded-xl border transition-all ${feedbackStatus['main_result'] === 'up' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-emerald-500'}`}
+                        className={`p-3 rounded-2xl border transition-all shadow-sm ${feedbackStatus['main_result'] === 'up' ? 'bg-emerald-500 border-emerald-500 text-white shadow-emerald-200' : 'bg-white border-slate-200 text-slate-400 hover:text-emerald-500'}`}
                       >
-                        <CheckCircle2 className="w-5 h-5" />
-                      </button>
-                      <button 
+                        <CheckCircle2 className="w-6 h-6" />
+                      </motion.button>
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => handleRateResult('main_result', 'down')}
-                        className={`p-2 rounded-xl border transition-all ${feedbackStatus['main_result'] === 'down' ? 'bg-red-50 border-red-200 text-red-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-red-500'}`}
+                        className={`p-3 rounded-2xl border transition-all shadow-sm ${feedbackStatus['main_result'] === 'down' ? 'bg-red-500 border-red-500 text-white shadow-red-200' : 'bg-white border-slate-200 text-slate-400 hover:text-red-500'}`}
                       >
-                        <X className="w-5 h-5" />
-                      </button>
+                        <X className="w-6 h-6" />
+                      </motion.button>
                     </div>
                   </div>
                   <button 
                     onClick={() => setShowFeedbackModal(true)}
-                    className="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-2"
+                    className="text-sm font-black text-indigo-600 hover:text-brand-600 flex items-center gap-2 uppercase tracking-widest transition-colors"
                   >
-                    Sugerir mejoras
+                    Sugerir mejoras de IA →
                   </button>
-                </div>
-
-                <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <DollarSign className="w-8 h-8 text-indigo-600 mb-4" />
-                    <h3 className="font-bold mb-2">Rentabilidad</h3>
-                    <p className="text-sm text-slate-600">Productos con márgenes superiores al 30% tras gastos de envío.</p>
-                  </div>
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <Target className="w-8 h-8 text-indigo-600 mb-4" />
-                    <h3 className="font-bold mb-2">Segmentación</h3>
-                    <p className="text-sm text-slate-600">Nichos específicos con baja competencia y alta demanda.</p>
-                  </div>
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <Rocket className="w-8 h-8 text-indigo-600 mb-4" />
-                    <h3 className="font-bold mb-2">Escalabilidad</h3>
-                    <p className="text-sm text-slate-600">Estrategias probadas para pasar de 0 a 100 ventas diarias.</p>
-                  </div>
-                </div>
+                </motion.div>
 
                 {!isProAccount && (
                   <div className="mt-12 p-8 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-3xl text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-indigo-200">
@@ -1457,94 +1555,122 @@ function MainApp() {
 
                 {/* Competitive Analysis Tool */}
                 <div className="mt-16 pt-16 border-t border-slate-100">
-                  <div className="bg-slate-900 rounded-[2rem] p-8 md:p-12 text-white overflow-hidden relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+                  <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="bg-slate-950 rounded-[3rem] p-8 md:p-16 text-white overflow-hidden relative shadow-2xl shadow-slate-900/50"
+                  >
+                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-600/10 rounded-full -mr-64 -mt-64 blur-[120px] pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full -ml-32 -mb-32 blur-[100px] pointer-events-none" />
                     
                     <div className="relative z-10">
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="bg-indigo-500 p-2 rounded-xl">
-                          <Target className="w-6 h-6 text-white" />
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                        <div className="flex items-center gap-4">
+                          <div className="bg-brand-600/20 p-4 rounded-2xl border border-brand-500/30">
+                            <Target className="w-8 h-8 text-brand-400" />
+                          </div>
+                          <div>
+                            <h3 className="text-3xl font-black tracking-tight">Análisis de Competencia</h3>
+                            <p className="text-slate-400 font-medium">Inteligencia de mercado nivel experto</p>
+                          </div>
                         </div>
-                        <h3 className="text-2xl font-bold">Análisis de Competencia Profundo</h3>
+                        <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Motor de IA Activo</span>
+                        </div>
                       </div>
                       
-                      <p className="text-slate-300 mb-8 max-w-2xl">
-                        Elige uno de los productos recomendados arriba, selecciona tu mercado objetivo y obtén un desglose detallado de precios, palabras clave (cola larga), volumen de búsqueda, intención del usuario, creativos publicitarios y costos.
+                      <p className="text-slate-400 mb-10 max-w-2xl text-lg leading-relaxed">
+                        Desbloquea el desglose detallado de precios, palabras clave de alta conversión, volumen de búsqueda real y estrategias de creativos publicitarios.
                       </p>
 
-                      <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col gap-6">
-                        <div className="flex flex-col md:flex-row gap-4">
-                          <div className="flex-1 relative group/input">
-                            <ShoppingBag className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 group-focus-within/input:text-brand-400 transition-colors" />
-                            <input 
-                              type="text" 
-                              placeholder="Nombre del producto..."
-                              className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-6 py-5 text-white placeholder:text-slate-500 outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
-                              value={productToAnalyze}
-                              onChange={(e) => setProductToAnalyze(e.target.value)}
-                            />
+                      <form onSubmit={handleCompetitiveAnalysis} className="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Producto a Espiar</label>
+                            <div className="relative group/input">
+                              <ShoppingBag className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 w-5 h-5 group-focus-within/input:text-brand-400 transition-colors" />
+                              <input 
+                                type="text" 
+                                placeholder="Nombre del producto..."
+                                className="w-full bg-slate-900/50 border border-white/10 rounded-2xl pl-16 pr-6 py-6 text-white placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
+                                value={productToAnalyze}
+                                onChange={(e) => setProductToAnalyze(e.target.value)}
+                              />
+                            </div>
                           </div>
-                          <div className="relative group/input">
-                            <Target className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 group-focus-within/input:text-brand-400 transition-colors" />
-                            <select 
-                              className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] pl-14 pr-12 py-5 text-white outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none cursor-pointer"
-                              value={targetRegion}
-                              onChange={(e) => setTargetRegion(e.target.value)}
-                            >
-                              <option value="Global" className="bg-slate-900">Mercado Global</option>
-                              <option value="EE.UU." className="bg-slate-900">Estados Unidos</option>
-                              <option value="España" className="bg-slate-900">España</option>
-                              <option value="México" className="bg-slate-900">México</option>
-                              <option value="Colombia" className="bg-slate-900">Colombia</option>
-                              <option value="Chile" className="bg-slate-900">Chile</option>
-                              <option value="Europa" className="bg-slate-900">Europa (General)</option>
-                              <option value="Latinoamérica" className="bg-slate-900">Latinoamérica (General)</option>
-                            </select>
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Mercado Objetivo</label>
+                            <div className="relative group/input">
+                              <Target className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 w-5 h-5 group-focus-within/input:text-brand-400 transition-colors" />
+                              <select 
+                                className="w-full bg-slate-900/50 border border-white/10 rounded-2xl pl-16 pr-12 py-6 text-white outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none cursor-pointer font-medium"
+                                value={targetRegion}
+                                onChange={(e) => setTargetRegion(e.target.value)}
+                              >
+                                <option value="Global" className="bg-slate-950">Mercado Global</option>
+                                <option value="EE.UU." className="bg-slate-950">Estados Unidos</option>
+                                <option value="España" className="bg-slate-950">España</option>
+                                <option value="México" className="bg-slate-950">México</option>
+                                <option value="Colombia" className="bg-slate-950">Colombia</option>
+                                <option value="Chile" className="bg-slate-950">Chile</option>
+                                <option value="Europa" className="bg-slate-950">Europa (General)</option>
+                                <option value="Latinoamérica" className="bg-slate-950">Latinoamérica (General)</option>
+                              </select>
+                            </div>
                           </div>
                         </div>
-                        <button 
+                        <motion.button 
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                           type="submit"
                           disabled={analyzingCompetitors || !productToAnalyze}
-                          className="w-full bg-brand-600 hover:bg-brand-700 disabled:bg-slate-800 text-white font-black text-lg py-6 rounded-[1.5rem] transition-all shadow-xl shadow-brand-900/20 flex items-center justify-center gap-3 overflow-hidden relative group/btn"
+                          className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-slate-800 text-white font-black text-xl py-8 rounded-2xl transition-all shadow-2xl shadow-brand-900/40 flex items-center justify-center gap-4 overflow-hidden relative group/btn"
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer" />
                           {analyzingCompetitors ? (
                             <>
-                              <Loader2 className="w-6 h-6 animate-spin" />
-                              <span>Generando Informe Estratégico...</span>
+                              <Loader2 className="w-8 h-8 animate-spin" />
+                              <span>PROCESANDO DATOS...</span>
                             </>
                           ) : (
                             <>
-                              <TrendingUp className="w-6 h-6 group-hover/btn:scale-110 transition-transform" />
-                              <span>Analizar Competencia y Costos</span>
+                              <TrendingUp className="w-8 h-8 group-hover/btn:scale-110 transition-transform" />
+                              <span>GENERAR INFORME DE COMPETENCIA</span>
                             </>
                           )}
-                        </button>
+                        </motion.button>
                       </form>
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Competitive Analysis Result */}
                   <AnimatePresence>
                     {competitiveResult && (
                       <motion.div 
                         id="competitive-analysis-result"
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-12 bg-white rounded-[3rem] p-8 md:p-16 border border-brand-100 shadow-2xl shadow-brand-100/20 relative overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.98, y: 30 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="mt-12 bg-white/90 backdrop-blur-xl rounded-[3.5rem] p-8 md:p-16 border border-brand-100 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.1)] relative overflow-hidden"
                       >
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-50 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full -mr-48 -mt-48 blur-[100px] pointer-events-none" />
                         
-                        <div className="relative z-10 flex items-center gap-4 mb-10">
-                          <div className="bg-brand-600 p-3 rounded-2xl shadow-lg shadow-brand-200">
-                            <TrendingUp className="w-6 h-6 text-white" />
+                        <div className="relative z-10 flex items-center gap-6 mb-12 pb-8 border-b border-slate-100">
+                          <motion.div 
+                            animate={{ y: [0, -5, 0] }}
+                            transition={{ duration: 3, repeat: Infinity }}
+                            className="bg-brand-600 p-4 rounded-2xl shadow-xl shadow-brand-200"
+                          >
+                            <Target className="w-8 h-8 text-white" />
+                          </motion.div>
+                          <div>
+                            <span className="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mb-1 block">Informe de Inteligencia</span>
+                            <h4 className="text-3xl font-black text-slate-900 tracking-tight">Análisis: {productToAnalyze}</h4>
                           </div>
-                          <h4 className="text-2xl font-black text-slate-900 tracking-tight">Análisis de Mercado: {productToAnalyze}</h4>
                         </div>
                         
-                        <div className="prose prose-slate max-w-none 
-                          prose-headings:text-indigo-700 prose-headings:font-bold
-                          prose-p:text-slate-700 prose-li:text-slate-700">
+                        <div className="prose prose-slate max-w-none">
                           <MemoizedMarkdown content={competitiveResult} />
                         </div>
 

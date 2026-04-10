@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Outfit", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
   
   --color-brand-50: #f5f7ff;
   --color-brand-100: #ebf0fe;
@@ -52,32 +53,51 @@
 }
 
 @layer base {
+  .prose {
+    @apply font-sans;
+  }
+  .prose h1, .prose h2, .prose h3 {
+    @apply font-display text-slate-900 mb-6 mt-12 first:mt-0;
+  }
+  .prose p {
+    @apply font-serif text-xl leading-relaxed text-slate-700 mb-8;
+  }
+  .prose strong {
+    @apply font-sans font-bold text-slate-900;
+  }
   .prose table {
-    @apply w-full border-collapse rounded-3xl overflow-hidden shadow-sm border border-slate-100 my-8;
+    @apply w-full border-collapse rounded-[2rem] overflow-hidden shadow-2xl shadow-slate-200/50 border border-slate-100 my-12 bg-white;
   }
   .prose thead {
-    @apply bg-slate-50 border-b border-slate-100;
+    @apply bg-brand-600 border-b-0;
   }
   .prose th {
-    @apply text-left px-6 py-4 text-xs font-black text-brand-600 uppercase tracking-wider;
+    @apply text-left px-8 py-5 text-xs font-black text-white uppercase tracking-[0.2em];
   }
   .prose td {
-    @apply px-6 py-4 text-sm text-slate-600 border-b border-slate-50;
+    @apply px-8 py-5 text-base text-slate-600 border-b border-slate-50 font-serif;
   }
   .prose tr:last-child td {
     @apply border-b-0;
   }
   .prose tr:hover td {
-    @apply bg-brand-50/50;
+    @apply bg-brand-50/30;
   }
   .prose ul {
-    @apply space-y-3 my-6;
+    @apply space-y-4 my-8;
   }
   .prose li {
-    @apply relative pl-8 text-slate-600;
+    @apply relative pl-10 text-slate-700 font-serif text-lg;
   }
   .prose li::before {
-    content: "→";
-    @apply absolute left-0 text-brand-500 font-black;
+    content: "";
+    @apply absolute left-0 top-3 w-6 h-[2px] bg-brand-500 rounded-full;
+  }
+  .prose blockquote {
+    @apply border-l-0 bg-slate-900 text-white p-10 rounded-[2.5rem] italic font-serif text-2xl relative my-12 overflow-hidden shadow-2xl;
+  }
+  .prose blockquote::before {
+    content: "“";
+    @apply absolute top-4 left-6 text-8xl text-white/10 font-serif;
   }
 }
