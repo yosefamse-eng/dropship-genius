@@ -124,6 +124,67 @@ function MainApp() {
     return Math.floor(Math.random() * (85 - 35 + 1)) + 35;
   });
   const [avatarSeeds, setAvatarSeeds] = useState([10, 20, 30]);
+  const [currentTestimonials, setCurrentTestimonials] = useState([0, 1, 2]);
+  const [currentProTipIndex, setCurrentProTipIndex] = useState(0);
+
+  const PRO_TIPS = useMemo(() => [
+    "No te enamores del producto, enamórate del proceso. Prueba 3-5 productos a la vez con presupuestos pequeños en TikTok Ads para encontrar el que realmente escala.",
+    "La clave del dropshipping en 2026 es la marca. No vendas solo un objeto, vende una solución o un estilo de vida.",
+    "Usa el contenido orgánico de TikTok para validar tus productos antes de gastar un solo dólar en publicidad paga.",
+    "La velocidad de carga de tu tienda es crucial. Si tarda más de 3 segundos, estás perdiendo el 50% de tus clientes potenciales.",
+    "Enfócate en nichos apasionados. Es mucho más fácil venderle a alguien que ama a sus mascotas que a alguien que solo busca un gadget genérico."
+  ], []);
+
+  const ALL_TESTIMONIALS = useMemo(() => [
+    {
+      name: "Carlos R.",
+      role: "Dropshipper 7-figuras",
+      text: "DropshipGenius me ahorra horas de investigación. El primer producto que analicé me generó $500 en ventas el primer día.",
+      avatar: "https://picsum.photos/seed/carlos/100/100"
+    },
+    {
+      name: "Elena M.",
+      role: "E-commerce Manager",
+      text: "La precisión de la IA para detectar tendencias en TikTok es increíble. Es como tener un equipo de analistas trabajando 24/7.",
+      avatar: "https://picsum.photos/seed/elena/100/100"
+    },
+    {
+      name: "Javier S.",
+      role: "Emprendedor Digital",
+      text: "El análisis de competencia y costos es lo que marca la diferencia. Ahora sé exactamente cuánto puedo gastar en ads.",
+      avatar: "https://picsum.photos/seed/javier/100/100"
+    },
+    {
+      name: "Sofia L.",
+      role: "Tienda de Moda",
+      text: "Encontré un nicho de joyería minimalista que no sabía que existía. Mis ventas han subido un 40%.",
+      avatar: "https://picsum.photos/seed/sofia/100/100"
+    },
+    {
+      name: "Miguel A.",
+      role: "Especialista en Ads",
+      text: "Los públicos que sugiere la IA son oro puro. Mi ROAS ha pasado de 2.1 a 4.5 en dos semanas.",
+      avatar: "https://picsum.photos/seed/miguel/100/100"
+    },
+    {
+      name: "Lucia P.",
+      role: "Side Hustle",
+      text: "Como principiante, esto me dio la confianza para lanzar mi primera tienda. Ya tengo mis primeras 10 ventas.",
+      avatar: "https://picsum.photos/seed/lucia/100/100"
+    },
+    {
+      name: "Roberto T.",
+      role: "Agencia E-com",
+      text: "Usamos DropshipGenius para todos nuestros clientes. Es la herramienta de validación más rápida del mercado.",
+      avatar: "https://picsum.photos/seed/roberto/100/100"
+    },
+    {
+      name: "Ana G.",
+      role: "Vendedora Amazon",
+      text: "Incluso para Amazon FBA, las tendencias que detecta son súper útiles para encontrar nuevos productos.",
+      avatar: "https://picsum.photos/seed/ana/100/100"
+    }
+  ], []);
 
   const DAILY_LIMIT = 5;
   const today = new Date().toISOString().split('T')[0];
@@ -165,9 +226,24 @@ function MainApp() {
           return newSeeds;
         });
       }
-    }, 3000);
+
+      // Rotate testimonials
+      setCurrentTestimonials(prev => {
+        const next = [...prev];
+        const indexToReplace = Math.floor(Math.random() * 3);
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * ALL_TESTIMONIALS.length);
+        } while (next.includes(newIndex));
+        next[indexToReplace] = newIndex;
+        return next;
+      });
+
+      // Rotate Pro Tip
+      setCurrentProTipIndex(prev => (prev + 1) % PRO_TIPS.length);
+    }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [ALL_TESTIMONIALS, PRO_TIPS]);
 
   // Push Notifications Setup
   useEffect(() => {
@@ -421,25 +497,6 @@ function MainApp() {
     } finally {
       setIsLoggingIn(false);
     }
-  };
-
-  const handleGuestLogin = () => {
-    const guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
-    const guestUser = {
-      uid: guestId,
-      displayName: 'Invitado',
-      email: 'invitado@dropshipgenius.com',
-      photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest',
-      isGuest: true
-    };
-    setUser(guestUser as any);
-    setUserData({
-      uid: guestId,
-      credits: 100,
-      isPro: false,
-      role: 'user',
-      isGuest: true
-    } as any);
   };
 
   const handleLogout = async () => {
@@ -1794,44 +1851,31 @@ function MainApp() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  name: "Carlos R.",
-                  role: "Dropshipper 7-figuras",
-                  text: "DropshipGenius me ahorra horas de investigación. El primer producto que analicé me generó $500 en ventas el primer día.",
-                  avatar: "https://picsum.photos/seed/carlos/100/100"
-                },
-                {
-                  name: "Elena M.",
-                  role: "E-commerce Manager",
-                  text: "La precisión de la IA para detectar tendencias en TikTok es increíble. Es como tener un equipo de analistas trabajando 24/7.",
-                  avatar: "https://picsum.photos/seed/elena/100/100"
-                },
-                {
-                  name: "Javier S.",
-                  role: "Emprendedor Digital",
-                  text: "El análisis de competencia y costos es lo que marca la diferencia. Ahora sé exactamente cuánto puedo gastar en ads.",
-                  avatar: "https://picsum.photos/seed/javier/100/100"
-                }
-              ].map((t, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 relative"
-                >
-                  <div className="flex items-center gap-4 mb-6">
-                    <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full border-2 border-brand-100" referrerPolicy="no-referrer" />
-                    <div>
-                      <p className="font-black text-slate-900 leading-none">{t.name}</p>
-                      <p className="text-xs text-brand-600 font-bold mt-1">{t.role}</p>
-                    </div>
-                  </div>
-                  <p className="text-slate-600 italic leading-relaxed">"{t.text}"</p>
-                </motion.div>
-              ))}
+              <AnimatePresence mode="popLayout">
+                {currentTestimonials.map((idx) => {
+                  const t = ALL_TESTIMONIALS[idx];
+                  return (
+                    <motion.div 
+                      key={t.name}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                      transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                      className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 relative"
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full border-2 border-brand-100" referrerPolicy="no-referrer" />
+                        <div>
+                          <p className="font-black text-slate-900 leading-none">{t.name}</p>
+                          <p className="text-xs text-brand-600 font-bold mt-1">{t.role}</p>
+                        </div>
+                      </div>
+                      <p className="text-slate-600 italic leading-relaxed">"{t.text}"</p>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             </div>
           </div>
         )}
@@ -1895,9 +1939,17 @@ function MainApp() {
                 <Rocket className="w-5 h-5 text-indigo-400" />
                 Consejo Pro
               </h3>
-              <p className="text-slate-300 leading-relaxed">
-                "No te enamores del producto, enamórate del proceso. Prueba 3-5 productos a la vez con presupuestos pequeños en TikTok Ads para encontrar el que realmente escala."
-              </p>
+              <AnimatePresence mode="wait">
+                <motion.p 
+                  key={currentProTipIndex}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="text-slate-300 leading-relaxed min-h-[80px]"
+                >
+                  "{PRO_TIPS[currentProTipIndex]}"
+                </motion.p>
+              </AnimatePresence>
               <div className="mt-6 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold">DG</div>
                 <div>
@@ -2100,14 +2152,6 @@ function MainApp() {
               </div>
               <span className="text-xl font-black text-slate-900 tracking-tighter">DropshipGenius <span className="text-brand-600">IA</span></span>
             </div>
-            {!user && (
-              <button 
-                onClick={handleGuestLogin}
-                className="text-slate-400 hover:text-brand-600 font-bold text-xs uppercase tracking-widest transition-all"
-              >
-                Acceder como Invitado
-              </button>
-            )}
           </div>
           <div className="text-center border-t border-slate-100 pt-8">
             <p className="text-slate-500 text-sm">
