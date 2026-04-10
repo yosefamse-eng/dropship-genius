@@ -116,7 +116,11 @@ function MainApp() {
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [localCredits, setLocalCredits] = useState<number>(parseInt(localStorage.getItem('localCredits') || '20'));
   const [fcmToken, setFcmToken] = useState<string | null>(null);
-  const [activeUsers, setActiveUsers] = useState(42);
+  const [activeUsers, setActiveUsers] = useState(() => {
+    const saved = localStorage.getItem('activeUsers');
+    if (saved) return parseInt(saved);
+    return Math.floor(Math.random() * (85 - 35 + 1)) + 35;
+  });
 
   const DAILY_LIMIT = 5;
   const today = new Date().toISOString().split('T')[0];
@@ -144,7 +148,9 @@ function MainApp() {
       setActiveUsers(prev => {
         const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
         const newValue = prev + change;
-        return newValue < 10 ? 10 : newValue > 150 ? 150 : newValue;
+        const finalValue = newValue < 10 ? 10 : newValue > 150 ? 150 : newValue;
+        localStorage.setItem('activeUsers', finalValue.toString());
+        return finalValue;
       });
     }, 3000);
     return () => clearInterval(interval);
