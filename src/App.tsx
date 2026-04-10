@@ -11,6 +11,8 @@ import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
 import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, handleFirestoreError, FirestoreOperationType, sendEmailVerification, reload, getMessagingInstance, getToken, onMessage } from './firebase';
 import { doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp, collection, addDoc, query, orderBy, limit } from 'firebase/firestore';
+import { Toaster } from 'sonner';
+import { showErrorToast, showSuccessToast, showInfoToast } from './lib/error-handler';
 
 const ChatSupport = lazy(() => import('./components/ChatSupport'));
 
@@ -287,9 +289,8 @@ function MainApp() {
 
       unsubscribe = onMessage(messaging, (payload) => {
         console.log('Message received in foreground: ', payload);
-        // You could show a custom toast here
         if (payload.notification) {
-          alert(`${payload.notification.title}: ${payload.notification.body}`);
+          showInfoToast(`${payload.notification.title}: ${payload.notification.body}`);
         }
       });
     };
@@ -453,14 +454,14 @@ function MainApp() {
                   await updateDoc(userRef, {
                     credits: (userData?.credits || 0) + 200
                   });
-                  alert("¡Gracias! Se han añadido 200 créditos a tu cuenta.");
+                  showSuccessToast("¡Gracias! Se han añadido 200 créditos a tu cuenta.");
                 } else {
                   // Subscription: Pro status
                   await updateDoc(userRef, {
                     isPro: true,
                     credits: 9999
                   });
-                  alert("¡Felicidades! Ahora eres usuario PRO.");
+                  showSuccessToast("¡Felicidades! Ahora eres usuario PRO.");
                 }
                 
                 setShowPricing(false);
@@ -485,15 +486,12 @@ function MainApp() {
     try {
       googleProvider.setCustomParameters({ prompt: 'select_account' });
       await signInWithPopup(auth, googleProvider);
+      showSuccessToast("¡Bienvenido de nuevo!");
     } catch (error: any) {
       console.error("Error logging in:", error);
+      showErrorToast(error);
       if (error.code === 'auth/unauthorized-domain') {
         setLoginError("Dominio no autorizado. Por favor, abre la app en una pestaña nueva usando el botón de la esquina superior derecha.");
-      } else if (error.code !== 'auth/popup-closed-by-user') {
-        setLoginError(error.message || "Error al iniciar sesión. Por favor, intenta de nuevo.");
-      }
-      if (error.code !== 'auth/popup-closed-by-user') {
-        setTimeout(() => setLoginError(null), 8000);
       }
     } finally {
       setIsLoggingIn(false);
@@ -570,57 +568,63 @@ function MainApp() {
 
     setLoading(true);
     setResult(null);
-    const recommendations = await getProductRecommendations(niche, budget, salesChannel);
-    setResult(recommendations);
-    
-    // Update cache
-    setRecommendationCache(prev => ({ ...prev, [cacheKey]: recommendations }));
-
-    if (user && !(user as any).isGuest) {
-      const userRef = doc(db, 'users', user.uid);
-      const searchesRef = collection(db, 'users', user.uid, 'searches');
+    try {
+      const recommendations = await getProductRecommendations(niche, budget, salesChannel);
+      setResult(recommendations);
       
-      try {
-        // Save search to history
-        await addDoc(searchesRef, {
-          niche,
-          budget,
-          salesChannel,
-          result: recommendations,
-          timestamp: serverTimestamp()
-        });
+      // Update cache
+      setRecommendationCache(prev => ({ ...prev, [cacheKey]: recommendations }));
 
-        // Decrement credits and increment daily count if not pro
-        if (!isProAccount) {
-          const currentCount = (userData as any)?.lastSearchDate === today ? ((userData as any)?.dailySearchCount || 0) : 0;
-          await updateDoc(userRef, {
-            credits: Math.max(0, (userData?.credits || 0) - 20),
-            dailySearchCount: currentCount + 1,
-            lastSearchDate: today
+      if (user && !(user as any).isGuest) {
+        const userRef = doc(db, 'users', user.uid);
+        const searchesRef = collection(db, 'users', user.uid, 'searches');
+        
+        try {
+          // Save search to history
+          await addDoc(searchesRef, {
+            niche,
+            budget,
+            salesChannel,
+            result: recommendations,
+            timestamp: serverTimestamp()
           });
-        }
-      } catch (error) {
-        handleFirestoreError(error, FirestoreOperationType.WRITE, `users/${user.uid}/searches`);
-      }
-    } else if ((user as any)?.isGuest) {
-      // Guest credits logic
-      setUserData(prev => ({
-        ...prev!,
-        credits: Math.max(0, (prev?.credits || 0) - 20)
-      }));
-    } else {
-      // Decrement local credits and increment local daily count
-      const currentLocalCredits = parseInt(localStorage.getItem('localCredits') || '20');
-      const newLocalCredits = Math.max(0, currentLocalCredits - 20);
-      localStorage.setItem('localCredits', newLocalCredits.toString());
-      setLocalCredits(newLocalCredits);
 
-      const localLastDate = localStorage.getItem('localLastSearchDate');
-      const localCount = localLastDate === today ? parseInt(localStorage.getItem('localDailySearchCount') || '0') : 0;
-      localStorage.setItem('localDailySearchCount', (localCount + 1).toString());
-      localStorage.setItem('localLastSearchDate', today);
+          // Decrement credits and increment daily count if not pro
+          if (!isProAccount) {
+            const currentCount = (userData as any)?.lastSearchDate === today ? ((userData as any)?.dailySearchCount || 0) : 0;
+            await updateDoc(userRef, {
+              credits: Math.max(0, (userData?.credits || 0) - 20),
+              dailySearchCount: currentCount + 1,
+              lastSearchDate: today
+            });
+          }
+        } catch (error) {
+          handleFirestoreError(error, FirestoreOperationType.WRITE, `users/${user.uid}/searches`);
+        }
+      } else if ((user as any)?.isGuest) {
+        // Guest credits logic
+        setUserData(prev => ({
+          ...prev!,
+          credits: Math.max(0, (prev?.credits || 0) - 20)
+        }));
+      } else {
+        // Decrement local credits and increment local daily count
+        const currentLocalCredits = parseInt(localStorage.getItem('localCredits') || '20');
+        const newLocalCredits = Math.max(0, currentLocalCredits - 20);
+        localStorage.setItem('localCredits', newLocalCredits.toString());
+        setLocalCredits(newLocalCredits);
+
+        const localLastDate = localStorage.getItem('localLastSearchDate');
+        const localCount = localLastDate === today ? parseInt(localStorage.getItem('localDailySearchCount') || '0') : 0;
+        localStorage.setItem('localDailySearchCount', (localCount + 1).toString());
+        localStorage.setItem('localLastSearchDate', today);
+      }
+    } catch (error) {
+      console.error("Error in search:", error);
+      showErrorToast(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleShare = async () => {
@@ -643,9 +647,11 @@ function MainApp() {
       try {
         await navigator.clipboard.writeText(`${shareData.text}\n\n${result}`);
         setCopied(true);
+        showSuccessToast("Copiado al portapapeles");
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
         console.error('Error copying to clipboard:', err);
+        showErrorToast("Error al copiar al portapapeles");
       }
     }
   };
@@ -679,6 +685,7 @@ function MainApp() {
       }, 100);
     } catch (error) {
       console.error("Error in competitive analysis:", error);
+      showErrorToast(error);
     } finally {
       setAnalyzingCompetitors(false);
     }
@@ -719,12 +726,12 @@ function MainApp() {
         context: { niche, budget, productToAnalyze, targetRegion },
         timestamp: serverTimestamp()
       });
-      alert("¡Gracias por tus comentarios! Nos ayudan a mejorar.");
+      showSuccessToast("¡Gracias por tus comentarios! Nos ayudan a mejorar.");
       setFeedbackText('');
       setShowFeedbackModal(false);
     } catch (error) {
       console.error("Error saving detailed feedback:", error);
-      alert("Hubo un error al enviar tus comentarios. Inténtalo de nuevo.");
+      showErrorToast(error);
     } finally {
       setSubmittingFeedback(false);
     }
@@ -740,12 +747,16 @@ function MainApp() {
 
   const handleCheckVerification = async () => {
     if (auth.currentUser) {
-      await reload(auth.currentUser);
-      setIsEmailVerified(auth.currentUser.emailVerified);
-      if (auth.currentUser.emailVerified) {
-        alert("¡Correo verificado con éxito!");
-      } else {
-        alert("El correo aún no ha sido verificado. Por favor, revisa tu bandeja de entrada.");
+      try {
+        await reload(auth.currentUser);
+        setIsEmailVerified(auth.currentUser.emailVerified);
+        if (auth.currentUser.emailVerified) {
+          showSuccessToast("¡Correo verificado con éxito!");
+        } else {
+          showInfoToast("El correo aún no ha sido verificado. Por favor, revisa tu bandeja de entrada.");
+        }
+      } catch (error) {
+        showErrorToast(error);
       }
     }
   };
@@ -754,9 +765,9 @@ function MainApp() {
     if (auth.currentUser) {
       try {
         await sendEmailVerification(auth.currentUser);
-        alert("Se ha enviado un nuevo correo de verificación.");
+        showSuccessToast("Se ha enviado un nuevo correo de verificación.");
       } catch (error) {
-        alert("Error al enviar el correo. Inténtalo de nuevo más tarde.");
+        showErrorToast(error);
       }
     }
   };
@@ -770,7 +781,7 @@ function MainApp() {
         if ('Notification' in window && Notification.permission !== 'granted') {
           const permission = await Notification.requestPermission();
           if (permission !== 'granted') {
-            alert("Para recibir notificaciones, debes permitir los permisos en tu navegador.");
+            showInfoToast("Para recibir notificaciones, debes permitir los permisos en tu navegador.");
             return;
           }
         }
@@ -778,8 +789,10 @@ function MainApp() {
       await updateDoc(userRef, {
         notificationsEnabled: enabled
       });
+      showSuccessToast(enabled ? "Notificaciones activadas" : "Notificaciones desactivadas");
     } catch (error) {
       console.error("Error updating notification settings:", error);
+      showErrorToast(error);
     }
   };
 
@@ -2192,6 +2205,7 @@ function MainApp() {
       <Suspense fallback={<div className="fixed bottom-6 right-6 w-12 h-12 bg-slate-200 animate-pulse rounded-2xl" />}>
         <ChatSupport />
       </Suspense>
+      <Toaster richColors closeButton />
     </div>
   );
 }

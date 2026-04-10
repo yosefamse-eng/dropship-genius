@@ -27,10 +27,14 @@ export async function getProductRecommendations(niche: string, budget: string, s
       contents: prompt,
     });
     
-    return response.text || "No se pudieron generar recomendaciones.";
+    if (!response.text) {
+      throw new Error("La IA no devolvió contenido.");
+    }
+    
+    return response.text;
   } catch (error: any) {
     console.error("Error calling AI recommendations:", error);
-    return "Hubo un error al conectar con la IA. Por favor, asegúrate de que tu clave API esté configurada correctamente.";
+    throw error; // Throw the error so the UI can handle it with the toast system
   }
 }
 
@@ -60,10 +64,14 @@ export async function getCompetitiveAnalysis(productName: string, region: string
       contents: prompt,
     });
     
-    return response.text || "Error al generar el análisis competitivo.";
+    if (!response.text) {
+      throw new Error("Error al generar el análisis competitivo.");
+    }
+    
+    return response.text;
   } catch (error: any) {
     console.error("Error calling AI analysis:", error);
-    return "Error al generar el análisis competitivo.";
+    throw error;
   }
 }
 
