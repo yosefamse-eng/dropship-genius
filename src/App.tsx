@@ -26,14 +26,23 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 
   render() {
     if (this.state.hasError) {
+      const isConnectionError = this.state.error?.toString().includes('Indexed Database') || 
+                               this.state.error?.toString().includes('Connection to');
+      
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full text-center border border-red-100">
             <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl text-red-600">⚠️</span>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Algo salió mal</h2>
-            <p className="text-slate-600 mb-6">Hubo un error inesperado. Por favor, intenta recargar la página.</p>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+              {isConnectionError ? 'Error de Conexión' : 'Algo salió mal'}
+            </h2>
+            <p className="text-slate-600 mb-6">
+              {isConnectionError 
+                ? 'Se ha perdido la conexión con la base de datos local. Esto suele ocurrir por restricciones del navegador.' 
+                : 'Hubo un error inesperado. Por favor, intenta recargar la página.'}
+            </p>
             {this.state.error && (
               <div className="bg-slate-50 p-3 rounded-lg text-left mb-6 overflow-auto max-h-32">
                 <code className="text-xs text-red-500">{this.state.error.toString()}</code>

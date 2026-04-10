@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User, sendEmailVerification, reload } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, getDocFromServer } from 'firebase/firestore';
+import { initializeFirestore, memoryLocalCache, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, getDocFromServer } from 'firebase/firestore';
 import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
 
 // Import the Firebase configuration
@@ -8,7 +8,12 @@ import firebaseConfig from '../firebase-applet-config.json';
 
 // Initialize Firebase SDK
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+
+// Use memory-only cache to avoid IndexedDB errors in iframe environments
+export const db = initializeFirestore(app, {
+  localCache: memoryLocalCache(),
+}, firebaseConfig.firestoreDatabaseId);
+
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
