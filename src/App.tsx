@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * Version: 1.0.9
+ * Version: 1.1.1
  */
 
 import React, { useState, useEffect } from 'react';
@@ -9,7 +9,7 @@ import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, Shop
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { getProductRecommendations } from './services/geminiService';
-import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, handleFirestoreError, FirestoreOperationType, sendEmailVerification, reload } from './firebase';
+import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, handleFirestoreError, FirestoreOperationType, sendEmailVerification, reload, getMessagingInstance, getToken, onMessage } from './firebase';
 import { doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp, collection, addDoc, query, orderBy, limit } from 'firebase/firestore';
 
 // Error Boundary Component
@@ -81,6 +81,7 @@ function MainApp() {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [localCredits, setLocalCredits] = useState<number>(parseInt(localStorage.getItem('localCredits') || '20'));
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   const DAILY_LIMIT = 5;
   const today = new Date().toISOString().split('T')[0];
@@ -101,6 +102,72 @@ function MainApp() {
     // Store the callback to be called when the user clicks "Continue"
     // We'll use a ref or just rely on the modal button's existing logic
   };
+
+  // Push Notifications Setup
+  useEffect(() => {
+    if (!user) return;
+
+    let unsubscribe: (() => void) | undefined;
+
+    const setupNotifications = async () => {
+      if (!('Notification' in window)) {
+        console.warn("This browser does not support desktop notification");
+        return;
+      }
+
+      const messaging = await getMessagingInstance();
+      if (!messaging) return;
+
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          const token = await getToken(messaging, {
+            vapidKey: import.meta.env.VITE_VAPID_KEY
+          });
+          
+          if (token) {
+            setFcmToken(token);
+            // Save token to user profile
+            const userRef = doc(db, 'users', user.uid);
+            await updateDoc(userRef, { fcmToken: token });
+          }
+        }
+      } catch (error) {
+        console.error("Error setting up push notifications:", error);
+      }
+
+      unsubscribe = onMessage(messaging, (payload) => {
+        console.log('Message received in foreground: ', payload);
+        // You could show a custom toast here
+        if (payload.notification) {
+          alert(`${payload.notification.title}: ${payload.notification.body}`);
+        }
+      });
+    };
+
+    setupNotifications();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [user]);
+
+  // Check for low credits and notify via backend
+  useEffect(() => {
+    if (user && userData && fcmToken) {
+      if (userData.credits < 50) {
+        fetch('/api/notifications/check-credits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.uid,
+            credits: userData.credits,
+            token: fcmToken
+          })
+        }).catch(err => console.error("Error checking credits:", err));
+      }
+    }
+  }, [user, userData, fcmToken]);
 
   // Auth Listener
   useEffect(() => {
@@ -1125,7 +1192,7 @@ function MainApp() {
             Los datos proporcionados son estimaciones basadas en tendencias de mercado actuales.
           </p>
           <div className="text-[10px] text-slate-300 font-mono mt-4">
-            v1.0.9-deploy-check
+            v1.1.1-deploy-check
           </div>
         </div>
       </footer>

@@ -14,6 +14,7 @@
         "role": { "type": "string", "enum": ["admin", "user"], "description": "Rol del usuario en la plataforma." },
         "dailySearchCount": { "type": "integer", "description": "Número de búsquedas realizadas hoy." },
         "lastSearchDate": { "type": "string", "format": "date", "description": "Fecha de la última búsqueda realizada." },
+        "fcmToken": { "type": "string", "description": "Token de Firebase Cloud Messaging para notificaciones push." },
         "createdAt": { "type": "string", "format": "date-time", "description": "Fecha de creación de la cuenta." }
       },
       "required": ["uid", "email", "credits", "isPro"]

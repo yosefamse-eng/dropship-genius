@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User, sendEmailVerification, reload } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, getDocFromServer } from 'firebase/firestore';
+import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
 
 // Import the Firebase configuration
 import firebaseConfig from '../firebase-applet-config.json';
@@ -11,7 +12,26 @@ export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export { signInWithPopup, signOut, onAuthStateChanged, sendEmailVerification, reload };
+// Safely initialize messaging
+let messagingInstance = null;
+
+export const getMessagingInstance = async () => {
+  if (typeof window === 'undefined') return null;
+  if (messagingInstance) return messagingInstance;
+  
+  try {
+    const supported = await isSupported();
+    if (supported) {
+      messagingInstance = getMessaging(app);
+      return messagingInstance;
+    }
+  } catch (error) {
+    console.warn("Firebase Messaging is not supported in this browser:", error);
+  }
+  return null;
+};
+
+export { signInWithPopup, signOut, onAuthStateChanged, sendEmailVerification, reload, getToken, onMessage };
 export type { User };
 
 // Error handling helper
