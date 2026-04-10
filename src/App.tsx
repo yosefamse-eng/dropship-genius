@@ -102,6 +102,8 @@ function MainApp() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   
   // Performance: Result Caching
   const [recommendationCache, setRecommendationCache] = useState<Record<string, string>>({});
@@ -389,11 +391,20 @@ function MainApp() {
   }, [paypalLoaded, showPricing, showAdModal, user, userData]);
 
   const handleLogin = async () => {
+    if (isLoggingIn) return;
+    setIsLoggingIn(true);
+    setLoginError(null);
     try {
+      googleProvider.setCustomParameters({ prompt: 'select_account' });
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
       console.error("Error logging in:", error);
-      alert(`Error al iniciar sesión: ${error.message || error}`);
+      if (error.code !== 'auth/popup-closed-by-user') {
+        setLoginError(error.message || "Error al iniciar sesión. Por favor, intenta de nuevo.");
+        setTimeout(() => setLoginError(null), 5000);
+      }
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -826,6 +837,15 @@ function MainApp() {
                 </button>
               </div>
             )}
+            {loginError && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-full mt-2 right-0 bg-red-50 border border-red-100 text-red-600 text-xs font-bold px-4 py-2 rounded-xl shadow-lg z-50 whitespace-nowrap"
+              >
+                {loginError}
+              </motion.div>
+            )}
             {user && !userData?.isPro && (
               <button 
                 onClick={() => setShowPricing(true)}
@@ -1235,9 +1255,12 @@ function MainApp() {
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
                   >
+                    <option value="muy_bajo">Muy Bajo (&lt; $10)</option>
                     <option value="bajo">Bajo ($10 - $30)</option>
                     <option value="medio">Medio ($30 - $100)</option>
-                    <option value="alto">Alto ($100+)</option>
+                    <option value="alto">Alto ($100 - $500)</option>
+                    <option value="escala">Escala ($500 - $2000)</option>
+                    <option value="agresivo">Agresivo ($2000+)</option>
                   </select>
                 </div>
               </div>
