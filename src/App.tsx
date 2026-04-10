@@ -345,9 +345,29 @@ function MainApp() {
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error logging in:", error);
+      alert(`Error al iniciar sesión: ${error.message || error}`);
     }
+  };
+
+  const handleGuestLogin = () => {
+    const guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
+    const guestUser = {
+      uid: guestId,
+      displayName: 'Invitado',
+      email: 'invitado@dropshipgenius.com',
+      photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest',
+      isGuest: true
+    };
+    setUser(guestUser as any);
+    setUserData({
+      uid: guestId,
+      credits: 100,
+      isPro: false,
+      role: 'user',
+      isGuest: true
+    } as any);
   };
 
   const handleLogout = async () => {
@@ -416,7 +436,7 @@ function MainApp() {
     const recommendations = await getProductRecommendations(niche, budget);
     setResult(recommendations);
 
-    if (user) {
+    if (user && !(user as any).isGuest) {
       const userRef = doc(db, 'users', user.uid);
       const searchesRef = collection(db, 'users', user.uid, 'searches');
       
@@ -441,6 +461,12 @@ function MainApp() {
       } catch (error) {
         handleFirestoreError(error, FirestoreOperationType.WRITE, `users/${user.uid}/searches`);
       }
+    } else if ((user as any)?.isGuest) {
+      // Guest credits logic
+      setUserData(prev => ({
+        ...prev!,
+        credits: Math.max(0, (prev?.credits || 0) - 20)
+      }));
     } else {
       // Decrement local credits and increment local daily count
       const currentLocalCredits = parseInt(localStorage.getItem('localCredits') || '20');
@@ -640,11 +666,13 @@ function MainApp() {
                 </div>
               </>
             ) : (
-              <div className="flex items-center gap-3">
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border bg-slate-100 border-slate-200">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
-                  <span className="text-xs font-bold text-slate-600">{localCredits} Créditos Gratis</span>
-                </div>
+              <div className="flex flex-col sm:flex-row items-center gap-2">
+                <button 
+                  onClick={handleGuestLogin}
+                  className="text-indigo-600 hover:text-indigo-700 font-bold text-xs px-3 py-2 rounded-xl transition-all"
+                >
+                  Modo Invitado
+                </button>
                 <button 
                   onClick={handleLogin}
                   className="flex flex-col items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-100 group"
