@@ -116,6 +116,7 @@ function MainApp() {
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [localCredits, setLocalCredits] = useState<number>(parseInt(localStorage.getItem('localCredits') || '20'));
   const [fcmToken, setFcmToken] = useState<string | null>(null);
+  const [activeUsers, setActiveUsers] = useState(42);
 
   const DAILY_LIMIT = 5;
   const today = new Date().toISOString().split('T')[0];
@@ -136,6 +137,18 @@ function MainApp() {
     // Store the callback to be called when the user clicks "Continue"
     // We'll use a ref or just rely on the modal button's existing logic
   };
+
+  // Live Activity Simulation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveUsers(prev => {
+        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        const newValue = prev + change;
+        return newValue < 10 ? 10 : newValue > 150 ? 150 : newValue;
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Push Notifications Setup
   useEffect(() => {
@@ -1174,7 +1187,7 @@ function MainApp() {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>42 personas buscando productos ahora mismo</span>
+              <span>{activeUsers} personas buscando productos ahora mismo</span>
             </div>
           </motion.div>
         </div>
