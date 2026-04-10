@@ -936,7 +936,7 @@ function MainApp() {
             {user && !userData?.isPro && (
               <button 
                 onClick={() => setShowPricing(true)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-100"
+                className="hidden sm:block bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-100"
               >
                 Mejorar a PRO
               </button>
@@ -1286,7 +1286,7 @@ function MainApp() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight leading-[1.1]"
+            className="text-4xl sm:text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight leading-[1.1]"
           >
             Encuentra tu próximo <br />
             <span className="text-gradient">Producto Ganador</span>
@@ -1295,7 +1295,7 @@ function MainApp() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10"
+            className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10 px-4"
           >
             Analizamos miles de tendencias globales en tiempo real para recomendarte productos con alto margen y baja competencia.
           </motion.p>
@@ -1334,7 +1334,7 @@ function MainApp() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/70 backdrop-blur-2xl p-10 rounded-[3.5rem] shadow-[0_32px_64px_-16px_rgba(79,70,229,0.2)] border border-white/50 mb-20 relative z-10 group"
+          className="bg-white/70 backdrop-blur-2xl p-6 md:p-10 rounded-3xl md:rounded-[3.5rem] shadow-[0_32px_64px_-16px_rgba(79,70,229,0.2)] border border-white/50 mb-20 relative z-10 group"
         >
           <form onSubmit={handleSearch} className="relative z-10 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1444,7 +1444,7 @@ function MainApp() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -40 }}
                 transition={{ type: "spring", damping: 20, stiffness: 100 }}
-                className="relative bg-white/80 backdrop-blur-xl rounded-[3.5rem] p-8 md:p-16 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.2)] border border-white/50 overflow-hidden"
+                className="relative bg-white/80 backdrop-blur-xl rounded-3xl md:rounded-[3.5rem] p-6 md:p-16 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.2)] border border-white/50 overflow-hidden"
               >
                 {/* Decorative background elements */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-100/30 rounded-full -mr-64 -mt-64 blur-[100px] pointer-events-none animate-pulse" />
@@ -1651,7 +1651,7 @@ function MainApp() {
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="bg-slate-950 rounded-[3rem] p-8 md:p-16 text-white overflow-hidden relative shadow-2xl shadow-slate-900/50"
+                    className="bg-slate-950 rounded-3xl md:rounded-[3rem] p-6 md:p-16 text-white overflow-hidden relative shadow-2xl shadow-slate-900/50"
                   >
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-600/10 rounded-full -mr-64 -mt-64 blur-[120px] pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full -ml-32 -mb-32 blur-[100px] pointer-events-none" />
@@ -1744,7 +1744,7 @@ function MainApp() {
                         id="competitive-analysis-result"
                         initial={{ opacity: 0, scale: 0.98, y: 30 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        className="mt-12 bg-white/90 backdrop-blur-xl rounded-[3.5rem] p-8 md:p-16 border border-brand-100 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.1)] relative overflow-hidden"
+                        className="mt-12 bg-white/90 backdrop-blur-xl rounded-3xl md:rounded-[3.5rem] p-6 md:p-16 border border-brand-100 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.1)] relative overflow-hidden"
                       >
                         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full -mr-48 -mt-48 blur-[100px] pointer-events-none" />
                         
@@ -1808,14 +1808,14 @@ function MainApp() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="md:col-span-2 bg-slate-900 rounded-[2.5rem] p-10 text-white overflow-hidden relative group"
+              className="md:col-span-2 bg-slate-900 rounded-3xl md:rounded-[2.5rem] p-8 md:p-10 text-white overflow-hidden relative group"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl -mr-32 -mt-32 transition-all group-hover:bg-indigo-600/30" />
               <div className="relative z-10">
                 <div className="bg-indigo-500/20 p-3 rounded-2xl w-fit mb-6">
                   <TrendingUp className="w-6 h-6 text-indigo-400" />
                 </div>
-                <h3 className="text-3xl font-black mb-4">Análisis de Tendencias Real-Time</h3>
+                <h3 className="text-2xl md:text-3xl font-black mb-4">Análisis de Tendencias Real-Time</h3>
                 <p className="text-slate-400 text-lg max-w-md leading-relaxed">
                   No adivines qué vender. Nuestra IA escanea TikTok, Amazon y AliExpress para encontrar lo que está explotando ahora mismo.
                 </p>
@@ -1827,7 +1827,7 @@ function MainApp() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl shadow-slate-200/50"
+              className="bg-white rounded-3xl md:rounded-[2.5rem] p-8 md:p-10 border border-slate-100 shadow-xl shadow-slate-200/50"
             >
               <div className="bg-emerald-100 p-3 rounded-2xl w-fit mb-6">
                 <DollarSign className="w-6 h-6 text-emerald-600" />
@@ -1843,7 +1843,7 @@ function MainApp() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-indigo-50 rounded-[2.5rem] p-10 border border-indigo-100"
+              className="bg-indigo-50 rounded-3xl md:rounded-[2.5rem] p-8 md:p-10 border border-indigo-100"
             >
               <div className="bg-indigo-600 p-3 rounded-2xl w-fit mb-6">
                 <Target className="w-6 h-6 text-white" />

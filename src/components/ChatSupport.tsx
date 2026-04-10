@@ -104,7 +104,7 @@ export default function ChatSupport() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="absolute bottom-24 right-0 w-[350px] md:w-[400px] h-[550px] bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(79,70,229,0.25)] border border-white/50 flex flex-col overflow-hidden"
+            className="absolute bottom-24 right-0 w-[calc(100vw-2rem)] sm:w-[350px] md:w-[400px] h-[500px] md:h-[550px] bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(79,70,229,0.25)] border border-white/50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-br from-brand-600 to-indigo-700 p-6 text-white relative overflow-hidden">
