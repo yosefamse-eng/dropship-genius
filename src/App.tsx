@@ -410,9 +410,13 @@ function MainApp() {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
       console.error("Error logging in:", error);
-      if (error.code !== 'auth/popup-closed-by-user') {
+      if (error.code === 'auth/unauthorized-domain') {
+        setLoginError("Dominio no autorizado. Por favor, abre la app en una pestaña nueva usando el botón de la esquina superior derecha.");
+      } else if (error.code !== 'auth/popup-closed-by-user') {
         setLoginError(error.message || "Error al iniciar sesión. Por favor, intenta de nuevo.");
-        setTimeout(() => setLoginError(null), 5000);
+      }
+      if (error.code !== 'auth/popup-closed-by-user') {
+        setTimeout(() => setLoginError(null), 8000);
       }
     } finally {
       setIsLoggingIn(false);
