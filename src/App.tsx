@@ -92,7 +92,7 @@ function MainApp() {
   const [budget, setBudget] = useState('bajo');
   const [salesChannel, setSalesChannel] = useState('TikTok');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<any | null>(null);
   const [copied, setCopied] = useState(false);
   const [showAdModal, setShowAdModal] = useState(false);
   const [adCountdown, setAdCountdown] = useState(5);
@@ -109,7 +109,7 @@ function MainApp() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   
   // Performance: Result Caching
-  const [recommendationCache, setRecommendationCache] = useState<Record<string, string>>({});
+  const [recommendationCache, setRecommendationCache] = useState<Record<string, any>>({});
   const [analysisCache, setAnalysisCache] = useState<Record<string, string>>({});
 
   const isProAccount = userData?.isPro || 
@@ -645,15 +645,27 @@ function MainApp() {
     } else {
       // Fallback to copy to clipboard
       try {
-        await navigator.clipboard.writeText(`${shareData.text}\n\n${result}`);
+        const textToCopy = typeof result === 'string' 
+          ? `${shareData.text}\n\n${result}`
+          : `${shareData.text}\n\nResumen: ${result.executiveSummary}\n\nProductos:\n${(result.products || []).map((p: any) => `- ${p.name}: ${p.summary}`).join('\n')}`;
+        
+        await navigator.clipboard.writeText(textToCopy);
         setCopied(true);
         showSuccessToast("Copiado al portapapeles");
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Error copying to clipboard:', err);
-        showErrorToast("Error al copiar al portapapeles");
+        console.error('Error sharing:', err);
+        showErrorToast("Error al compartir");
       }
     }
+  };
+
+  const handleAnalyzeProduct = (productName: string) => {
+    setProductToAnalyze(productName);
+    setTimeout(() => {
+      const element = document.getElementById('competitive-analysis-tool');
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const handleCompetitiveAnalysis = async (e: React.FormEvent) => {
@@ -1444,12 +1456,11 @@ function MainApp() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -40 }}
                 transition={{ type: "spring", damping: 20, stiffness: 100 }}
-                className="relative bg-white/80 backdrop-blur-xl rounded-3xl md:rounded-[3.5rem] p-6 md:p-16 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.2)] border border-white/50 overflow-hidden"
+                className="relative bg-white/80 backdrop-blur-xl rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-[0_32px_128px_-16px_rgba(79,70,229,0.2)] border border-white/50 overflow-hidden"
               >
                 {/* Decorative background elements */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-100/30 rounded-full -mr-64 -mt-64 blur-[100px] pointer-events-none animate-pulse" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-100/20 rounded-full -ml-64 -mb-64 blur-[100px] pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
-
+                
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -1497,27 +1508,78 @@ function MainApp() {
                   </motion.button>
                 </motion.div>
                 
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="relative prose prose-slate max-w-none 
-                  prose-headings:text-indigo-700 prose-headings:font-black prose-headings:tracking-tight prose-headings:mb-6
-                  prose-strong:text-slate-900 prose-strong:font-black prose-strong:bg-indigo-50 prose-strong:px-1 prose-strong:rounded
-                  prose-p:text-slate-700 prose-p:leading-relaxed prose-p:text-xl prose-p:mb-8 prose-p:font-serif
-                  prose-li:text-slate-700 prose-li:text-lg prose-li:mb-2 prose-li:font-serif
-                  prose-img:rounded-[2.5rem] prose-img:shadow-2xl prose-img:my-12
-                  prose-blockquote:border-l-0 prose-blockquote:bg-slate-900 prose-blockquote:text-white prose-blockquote:p-10 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:font-serif prose-blockquote:text-2xl prose-blockquote:relative prose-blockquote:my-12 prose-blockquote:overflow-hidden prose-blockquote:shadow-2xl"
-                >
-                  <MemoizedMarkdown content={result} />
-                </motion.div>
+                <div className="relative mb-16">
+                  <div className="text-xl text-slate-600 leading-relaxed font-serif italic border-l-4 border-brand-500 pl-6 py-2 prose prose-slate max-w-none">
+                    <MemoizedMarkdown content={result.executiveSummary} />
+                  </div>
+                </div>
+
+                {/* Product Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                  {result.products?.map((product: any, idx: number) => (
+                    <motion.div 
+                      key={idx}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 * idx }}
+                      className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-brand-100 transition-all duration-500"
+                    >
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={`https://picsum.photos/seed/${product.name.replace(/\s+/g, '-')}/400/300`} 
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                          <TrendingUp className="w-3 h-3 text-brand-600" />
+                          <span className="text-[10px] font-black text-slate-900">{product.trendLevel}/10</span>
+                        </div>
+                      </div>
+                      <div className="p-6 flex-1 flex flex-col">
+                        <h3 className="text-xl font-black text-slate-900 mb-2 line-clamp-1">{product.name}</h3>
+                        <p className="text-slate-500 text-sm mb-4 line-clamp-3 leading-relaxed">{product.summary}</p>
+                        
+                        <div className="mt-auto space-y-4">
+                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            <span>Margen: <span className="text-emerald-600">{product.estimatedMargin}</span></span>
+                            <span>Fit: <span className="text-indigo-600">{product.channelFit}/10</span></span>
+                          </div>
+                          
+                          <button 
+                            onClick={() => handleAnalyzeProduct(product.name)}
+                            className="w-full py-3 bg-slate-50 hover:bg-brand-600 text-slate-600 hover:text-white rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 group/btn"
+                          >
+                            <Target className="w-4 h-4" />
+                            ANALIZAR COMPETENCIA
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden mb-12">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="bg-brand-500 p-3 rounded-2xl">
+                        <Sparkles className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-black tracking-tight">Consejo Maestro</h3>
+                    </div>
+                    <div className="prose prose-invert max-w-none text-slate-300 text-lg leading-relaxed italic">
+                      <MemoizedMarkdown content={`"${result.masterTip}"`} />
+                    </div>
+                  </div>
+                </div>
 
                 {/* Key Metrics Grid - Bento Style */}
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="mt-20 grid grid-cols-1 md:grid-cols-6 gap-6"
+                  className="grid grid-cols-1 md:grid-cols-6 gap-6"
                 >
                   <motion.div 
                     whileHover={{ y: -8, scale: 1.01 }}
@@ -1646,7 +1708,7 @@ function MainApp() {
                 )}
 
                 {/* Competitive Analysis Tool */}
-                <div className="mt-16 pt-16 border-t border-slate-100">
+                <div id="competitive-analysis-tool" className="mt-16 pt-16 border-t border-slate-100">
                   <motion.div 
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
