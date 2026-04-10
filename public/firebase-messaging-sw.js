@@ -2,12 +2,12 @@ importScripts('https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.11.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyBjbfWR3voIaEC3uu7n96t7kzplm7xD9TM",
-  authDomain: "dropshipgenius.firebaseapp.com",
-  projectId: "dropshipgenius",
-  storageBucket: "dropshipgenius.firebasestorage.app",
-  messagingSenderId: "637457547823",
-  appId: "1:637457547823:web:24aa79e0561ee67b54fcda"
+  apiKey: "AIzaSyDikjCEyALqPpQVGsXgS6Ot00FyvUc7QKM",
+  authDomain: "gen-lang-client-0721128056.firebaseapp.com",
+  projectId: "gen-lang-client-0721128056",
+  storageBucket: "gen-lang-client-0721128056.firebasestorage.app",
+  messagingSenderId: "265538834732",
+  appId: "1:265538834732:web:e0f5d9ab9dad9d210bdc89"
 });
 
 let messaging = null;

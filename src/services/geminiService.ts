@@ -37,3 +37,34 @@ export async function getProductRecommendations(niche: string, budget: string) {
     return "Hubo un error al conectar con la IA de Google. Por favor, asegúrate de que la clave API esté configurada correctamente en los Secretos de GitHub y vuelve a intentarlo.";
   }
 }
+
+export async function getCompetitiveAnalysis(productName: string) {
+  const apiKey = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+  
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+    return "Error: API Key missing.";
+  }
+  
+  const ai = new GoogleGenAI({ apiKey });
+  const prompt = `Actúa como un analista de mercado experto en e-commerce. 
+  Realiza un análisis competitivo profundo para el siguiente producto: "${productName}".
+  
+  Tu análisis DEBE incluir:
+  1. **Precios de la Competencia**: Rango de precios en Amazon, AliExpress y tiendas Shopify populares.
+  2. **Estrategias de Marketing**: Cómo lo están vendiendo los líderes (ej: anuncios de Facebook, colaboraciones con influencers, SEO).
+  3. **Sentimiento en Redes Sociales**: Qué dice la gente en TikTok, Instagram y Reddit sobre este tipo de producto (puntos positivos y quejas comunes).
+  4. **Oportunidad de Diferenciación**: Cómo puede un nuevo vendedor destacar frente a la competencia actual.
+  
+  Responde en un formato Markdown profesional, estructurado y en español. Usa emojis para hacer la lectura amena.`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+    });
+    return response.text || "No se pudo generar el análisis competitivo.";
+  } catch (error) {
+    console.error("Error calling Gemini for competitive analysis:", error);
+    return "Error al generar el análisis competitivo.";
+  }
+}

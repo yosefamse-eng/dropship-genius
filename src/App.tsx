@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
-import { getProductRecommendations } from './services/geminiService';
+import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
 import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, handleFirestoreError, FirestoreOperationType, sendEmailVerification, reload, getMessagingInstance, getToken, onMessage } from './firebase';
 import { doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp, collection, addDoc, query, orderBy, limit } from 'firebase/firestore';
 
@@ -72,6 +72,9 @@ function MainApp() {
   const [copied, setCopied] = useState(false);
   const [showAdModal, setShowAdModal] = useState(false);
   const [adCountdown, setAdCountdown] = useState(5);
+  const [competitiveResult, setCompetitiveResult] = useState<string | null>(null);
+  const [analyzingCompetitors, setAnalyzingCompetitors] = useState(false);
+  const [productToAnalyze, setProductToAnalyze] = useState('');
 
   const isProAccount = userData?.isPro || 
     user?.email === 'yosefamse@gmail.com' || 
@@ -346,6 +349,11 @@ function MainApp() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!niche) return;
+
+    setLoading(true);
+    setResult(null);
+    setCompetitiveResult(null);
+    setProductToAnalyze('');
     
     if (!user) {
       if (localCredits < 20) {
@@ -460,6 +468,29 @@ function MainApp() {
       } catch (err) {
         console.error('Error copying to clipboard:', err);
       }
+    }
+  };
+
+  const handleCompetitiveAnalysis = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!productToAnalyze) return;
+
+    setAnalyzingCompetitors(true);
+    setCompetitiveResult(null);
+
+    try {
+      const analysis = await getCompetitiveAnalysis(productToAnalyze);
+      setCompetitiveResult(analysis);
+      
+      // Scroll to analysis
+      setTimeout(() => {
+        const element = document.getElementById('competitive-analysis-result');
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } catch (error) {
+      console.error("Error in competitive analysis:", error);
+    } finally {
+      setAnalyzingCompetitors(false);
     }
   };
 
@@ -1086,6 +1117,78 @@ function MainApp() {
                     </button>
                   </div>
                 )}
+
+                {/* Competitive Analysis Tool */}
+                <div className="mt-16 pt-16 border-t border-slate-100">
+                  <div className="bg-slate-900 rounded-[2rem] p-8 md:p-12 text-white overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="bg-indigo-500 p-2 rounded-xl">
+                          <Target className="w-6 h-6 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-bold">Análisis de Competencia Profundo</h3>
+                      </div>
+                      
+                      <p className="text-slate-300 mb-8 max-w-2xl">
+                        Elige uno de los productos recomendados arriba y obtén un desglose detallado de precios, estrategias de marketing y lo que dicen los clientes en redes sociales.
+                      </p>
+
+                      <form onSubmit={handleCompetitiveAnalysis} className="flex flex-col md:flex-row gap-4">
+                        <input 
+                          type="text" 
+                          placeholder="Nombre del producto a analizar..."
+                          className="flex-1 bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                          value={productToAnalyze}
+                          onChange={(e) => setProductToAnalyze(e.target.value)}
+                        />
+                        <button 
+                          type="submit"
+                          disabled={analyzingCompetitors || !productToAnalyze}
+                          className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 text-white font-bold px-8 py-4 rounded-2xl transition-all flex items-center justify-center gap-2"
+                        >
+                          {analyzingCompetitors ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                              Analizando...
+                            </>
+                          ) : (
+                            <>
+                              <TrendingUp className="w-5 h-5" />
+                              Analizar Competencia
+                            </>
+                          )}
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+
+                  {/* Competitive Analysis Result */}
+                  <AnimatePresence>
+                    {competitiveResult && (
+                      <motion.div 
+                        id="competitive-analysis-result"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-8 bg-indigo-50/50 rounded-[2rem] p-8 md:p-12 border border-indigo-100"
+                      >
+                        <div className="flex items-center gap-3 mb-8">
+                          <div className="bg-indigo-600 p-2 rounded-xl">
+                            <TrendingUp className="w-5 h-5 text-white" />
+                          </div>
+                          <h4 className="text-xl font-bold text-slate-900">Resultados del Análisis: {productToAnalyze}</h4>
+                        </div>
+                        
+                        <div className="prose prose-slate max-w-none 
+                          prose-headings:text-indigo-700 prose-headings:font-bold
+                          prose-p:text-slate-700 prose-li:text-slate-700">
+                          <Markdown>{competitiveResult}</Markdown>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </motion.div>
             </div>
           )}
