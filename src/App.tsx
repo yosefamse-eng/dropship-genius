@@ -126,11 +126,17 @@ function MainApp() {
       const messaging = await getMessagingInstance();
       if (!messaging) return;
 
+      const vapidKey = import.meta.env.VITE_VAPID_KEY;
+      if (!vapidKey) {
+        console.warn("VITE_VAPID_KEY is missing. Push notifications registration skipped.");
+        return;
+      }
+
       try {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
           const token = await getToken(messaging, {
-            vapidKey: import.meta.env.VITE_VAPID_KEY
+            vapidKey: vapidKey
           });
           
           if (token) {

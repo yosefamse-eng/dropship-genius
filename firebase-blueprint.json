@@ -30,6 +30,31 @@
         "timestamp": { "type": "string", "format": "date-time", "description": "Fecha y hora de la búsqueda." }
       },
       "required": ["niche", "budget", "result", "timestamp"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Valoraciones rápidas (pulgar arriba/abajo) de los resultados.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "resultId": { "type": "string" },
+        "rating": { "type": "string", "enum": ["up", "down"] },
+        "niche": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "resultId", "rating", "timestamp"]
+    },
+    "DetailedFeedback": {
+      "title": "DetailedFeedback",
+      "description": "Comentarios detallados y sugerencias de los usuarios.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "text": { "type": "string" },
+        "context": { "type": "object" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "text", "timestamp"]
     }
   },
   "firestore": {
@@ -40,6 +65,14 @@
     "/users/{userId}/searches/{searchId}": {
       "schema": "Search",
       "description": "Historial de búsquedas del usuario."
+    },
+    "/feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Colección global de valoraciones rápidas."
+    },
+    "/detailed_feedback/{feedbackId}": {
+      "schema": "DetailedFeedback",
+      "description": "Colección global de comentarios detallados."
     }
   }
 }

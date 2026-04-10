@@ -36,6 +36,16 @@ service cloud.firestore {
       }
     }
 
+    match /feedback/{feedbackId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+
+    match /detailed_feedback/{feedbackId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+
     match /{path=**} {
       allow read, write: if isAdmin();
     }
