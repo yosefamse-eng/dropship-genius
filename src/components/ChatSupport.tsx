@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageCircle, X, Send, Loader2, User as UserIcon, Headset } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, User as UserIcon, Headset, Sparkles } from 'lucide-react';
 import { db, auth, FirestoreOperationType, handleFirestoreError } from '../firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc } from 'firebase/firestore';
+import { getSupportChatResponse } from '../services/geminiService';
 
 interface Message {
   id: string;
@@ -17,6 +18,7 @@ export default function ChatSupport() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const user = auth.currentUser;
 
@@ -68,10 +70,27 @@ export default function ChatSupport() {
         timestamp: serverTimestamp(),
         isAdmin: false
       });
+
+      // Get AI Response
+      setIsTyping(true);
+      const history = messages.slice(-10).map(m => ({
+        role: m.isAdmin ? 'model' : 'user',
+        text: m.text
+      }));
+
+      const aiResponse = await getSupportChatResponse(textToSend, history);
+
+      await addDoc(collection(db, chatPath), {
+        senderId: 'ai_assistant',
+        text: aiResponse,
+        timestamp: serverTimestamp(),
+        isAdmin: true
+      });
     } catch (error) {
       handleFirestoreError(error, FirestoreOperationType.CREATE, chatPath);
     } finally {
       setLoading(false);
+      setIsTyping(false);
     }
   };
 
@@ -94,8 +113,8 @@ export default function ChatSupport() {
                   <Headset className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold">Soporte en Vivo</h3>
-                  <p className="text-xs text-indigo-100">Estamos aquí para ayudarte</p>
+                  <h3 className="font-bold">Asistente IA</h3>
+                  <p className="text-xs text-indigo-100">Soporte inteligente 24/7</p>
                 </div>
               </div>
               <button 
@@ -111,9 +130,9 @@ export default function ChatSupport() {
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4">
                   <div className="bg-indigo-50 p-4 rounded-full mb-4">
-                    <MessageCircle className="w-8 h-8 text-indigo-600" />
+                    <Sparkles className="w-8 h-8 text-indigo-600" />
                   </div>
-                  <p className="text-slate-500 text-sm">¡Hola! ¿En qué podemos ayudarte hoy? Escribe tu mensaje abajo.</p>
+                  <p className="text-slate-500 text-sm">¡Hola! Soy tu asistente IA experto en dropshipping. Pregúntame sobre la plataforma o cómo escalar tu negocio.</p>
                 </div>
               ) : (
                 messages.map((msg) => (
@@ -130,6 +149,17 @@ export default function ChatSupport() {
                     </div>
                   </div>
                 ))
+              )}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm">
+                    <div className="flex gap-1">
+                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                    </div>
+                  </div>
+                </div>
               )}
               <div ref={messagesEndRef} />
             </div>
@@ -162,7 +192,7 @@ export default function ChatSupport() {
         }`}
       >
         {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-        {!isOpen && <span className="font-bold text-sm pr-2">Chat de Soporte</span>}
+        {!isOpen && <span className="font-bold text-sm pr-2">Asistente IA</span>}
       </button>
     </div>
   );

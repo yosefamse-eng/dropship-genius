@@ -700,7 +700,14 @@ function MainApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
+      {/* Decorative Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100/40 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-50/40 rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-blue-50/30 rounded-full blur-[80px]" />
+      </div>
+
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -1075,7 +1082,16 @@ function MainApp() {
         </AnimatePresence>
 
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold mb-8 shadow-sm"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>IMPULSADO POR GOOGLE GEMINI AI</span>
+          </motion.div>
+
           {user && !isEmailVerified && (
             <motion.div 
               initial={{ opacity: 0, y: -20 }}
@@ -1111,26 +1127,27 @@ function MainApp() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight"
+            className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight leading-[1.1]"
           >
-            Encuentra tu próximo <span className="text-indigo-600">Producto Ganador</span>
+            Encuentra tu próximo <br />
+            <span className="text-gradient">Producto Ganador</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg text-slate-600 max-w-2xl mx-auto"
+            className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed"
           >
-            Analizamos miles de tendencias con Inteligencia Artificial para recomendarte los productos con mayor potencial de ventas hoy mismo.
+            Analizamos miles de tendencias globales en tiempo real para recomendarte productos con alto margen y baja competencia.
           </motion.p>
         </div>
 
         {/* Search Form */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 mb-12"
+          className="bg-white p-10 rounded-[3rem] shadow-2xl shadow-indigo-100/50 border border-slate-100 mb-20 relative z-10"
         >
           <form onSubmit={handleSearch} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1204,33 +1221,33 @@ function MainApp() {
         {/* Results Section */}
         <AnimatePresence mode="wait">
           {result && (
-            <div className="space-y-8">
+            <div className="space-y-12 relative z-10">
               <motion.div 
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                className="relative bg-white rounded-[2.5rem] p-8 md:p-14 shadow-[0_20px_50px_rgba(79,70,229,0.1)] border border-indigo-50 overflow-hidden"
+                exit={{ opacity: 0, y: -40 }}
+                className="relative bg-white rounded-[3rem] p-8 md:p-16 shadow-[0_32px_64px_-16px_rgba(79,70,229,0.15)] border border-indigo-50 overflow-hidden"
               >
                 {/* Decorative background elements */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50/50 rounded-full -ml-32 -mb-32 blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-50/40 rounded-full -mr-48 -mt-48 blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-50/40 rounded-full -ml-48 -mb-48 blur-3xl pointer-events-none" />
 
-                <div className="relative flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 pb-8 border-b border-slate-100">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-br from-emerald-400 to-emerald-600 p-3 rounded-2xl shadow-lg shadow-emerald-100">
-                      <TrendingUp className="w-7 h-7 text-white" />
+                <div className="relative flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8 pb-10 border-b border-slate-100">
+                  <div className="flex items-center gap-6">
+                    <div className="bg-gradient-to-br from-brand-500 to-indigo-700 p-4 rounded-[1.5rem] shadow-xl shadow-brand-100">
+                      <TrendingUp className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <div className="flex flex-wrap gap-2 mb-1">
-                        <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-wider border border-indigo-100">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[10px] font-black uppercase tracking-widest border border-brand-100">
                           {niche}
                         </span>
-                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider border border-emerald-100">
-                          Presupuesto {budget}
+                        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                          PRESUPUESTO {budget}
                         </span>
                       </div>
-                      <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
-                        Análisis Estratégico
+                      <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+                        Informe Estratégico
                       </h2>
                     </div>
                   </div>
@@ -1394,15 +1411,17 @@ function MainApp() {
                     {competitiveResult && (
                       <motion.div 
                         id="competitive-analysis-result"
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-8 bg-indigo-50/50 rounded-[2rem] p-8 md:p-12 border border-indigo-100"
+                        className="mt-12 bg-white rounded-[3rem] p-8 md:p-16 border border-brand-100 shadow-2xl shadow-brand-100/20 relative overflow-hidden"
                       >
-                        <div className="flex items-center gap-3 mb-8">
-                          <div className="bg-indigo-600 p-2 rounded-xl">
-                            <TrendingUp className="w-5 h-5 text-white" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-50 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+                        
+                        <div className="relative z-10 flex items-center gap-4 mb-10">
+                          <div className="bg-brand-600 p-3 rounded-2xl shadow-lg shadow-brand-200">
+                            <TrendingUp className="w-6 h-6 text-white" />
                           </div>
-                          <h4 className="text-xl font-bold text-slate-900">Resultados del Análisis: {productToAnalyze}</h4>
+                          <h4 className="text-2xl font-black text-slate-900 tracking-tight">Análisis de Mercado: {productToAnalyze}</h4>
                         </div>
                         
                         <div className="prose prose-slate max-w-none 
@@ -1445,6 +1464,109 @@ function MainApp() {
             </div>
           )}
         </AnimatePresence>
+
+        {/* Features Bento Grid */}
+        {!result && !loading && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24 relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-2 bg-slate-900 rounded-[2.5rem] p-10 text-white overflow-hidden relative group"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl -mr-32 -mt-32 transition-all group-hover:bg-indigo-600/30" />
+              <div className="relative z-10">
+                <div className="bg-indigo-500/20 p-3 rounded-2xl w-fit mb-6">
+                  <TrendingUp className="w-6 h-6 text-indigo-400" />
+                </div>
+                <h3 className="text-3xl font-black mb-4">Análisis de Tendencias Real-Time</h3>
+                <p className="text-slate-400 text-lg max-w-md leading-relaxed">
+                  No adivines qué vender. Nuestra IA escanea TikTok, Amazon y AliExpress para encontrar lo que está explotando ahora mismo.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl shadow-slate-200/50"
+            >
+              <div className="bg-emerald-100 p-3 rounded-2xl w-fit mb-6">
+                <DollarSign className="w-6 h-6 text-emerald-600" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 mb-4">Márgenes Optimizados</h3>
+              <p className="text-slate-500 leading-relaxed">
+                Calculamos el ROI potencial y te sugerimos el precio de venta ideal para maximizar tus beneficios.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-indigo-50 rounded-[2.5rem] p-10 border border-indigo-100"
+            >
+              <div className="bg-indigo-600 p-3 rounded-2xl w-fit mb-6">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 mb-4">Público Objetivo</h3>
+              <p className="text-slate-700 leading-relaxed">
+                Recibe una segmentación detallada para tus campañas de Facebook y TikTok Ads.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="md:col-span-2 bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col md:flex-row items-center gap-10"
+            >
+              <div className="flex-1">
+                <div className="bg-brand-100 p-3 rounded-2xl w-fit mb-6">
+                  <Bell className="w-6 h-6 text-brand-600" />
+                </div>
+                <h3 className="text-3xl font-black text-slate-900 mb-4">Alertas de Nicho</h3>
+                <p className="text-slate-500 text-lg leading-relaxed">
+                  Suscríbete y recibe notificaciones push cuando detectemos una nueva oportunidad en tu nicho favorito.
+                </p>
+              </div>
+              <div className="w-full md:w-64 h-40 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-center p-6 text-center">
+                <p className="text-xs text-slate-400 font-medium italic">"Recibí una alerta de un gadget de cocina y escalé a $2k/día en una semana."</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Trust Bar */}
+        {!result && !loading && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center items-center gap-8 md:gap-16 mb-24 opacity-50 grayscale hover:grayscale-0 transition-all duration-700"
+          >
+            <div className="flex items-center gap-2 font-black text-slate-400">
+              <ShoppingBag className="w-5 h-5" />
+              <span className="tracking-tighter">SHOPIFY</span>
+            </div>
+            <div className="flex items-center gap-2 font-black text-slate-400">
+              <TrendingUp className="w-5 h-5" />
+              <span className="tracking-tighter">TIKTOK ADS</span>
+            </div>
+            <div className="flex items-center gap-2 font-black text-slate-400">
+              <Rocket className="w-5 h-5" />
+              <span className="tracking-tighter">ALIEXPRESS</span>
+            </div>
+            <div className="flex items-center gap-2 font-black text-slate-400">
+              <Target className="w-5 h-5" />
+              <span className="tracking-tighter">FACEBOOK</span>
+            </div>
+          </motion.div>
+        )}
 
         {/* Empty State / Tips */}
         {!result && !loading && (

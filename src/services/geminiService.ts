@@ -70,9 +70,53 @@ export async function getCompetitiveAnalysis(productName: string, region: string
       model: "gemini-3-flash-preview",
       contents: prompt,
     });
-    return response.text || "No se pudo generar el análisis competitivo.";
+    return response.text || "Error al generar el análisis competitivo.";
   } catch (error) {
     console.error("Error calling Gemini for competitive analysis:", error);
     return "Error al generar el análisis competitivo.";
+  }
+}
+
+export async function getSupportChatResponse(userMessage: string, chatHistory: { role: string, text: string }[]) {
+  const apiKey = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+  
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+    return "Lo siento, el servicio de IA no está configurado correctamente.";
+  }
+  
+  const ai = new GoogleGenAI({ apiKey });
+
+  const context = `
+    Eres el asistente virtual de DropshipGenius AI, una plataforma avanzada que utiliza IA para encontrar productos ganadores de dropshipping.
+    
+    Información Clave de la Plataforma (FAQs):
+    - ¿Cómo funciona?: Analizamos tendencias globales, redes sociales y marketplaces en tiempo real con Google Gemini para identificar alta demanda y baja competencia.
+    - Criterios: Evaluamos margen de beneficio, facilidad de envío, saturación y viralidad (TikTok/FB).
+    - Plan PRO: Búsquedas ilimitadas, proveedores VIP, análisis profundo, soporte prioritario, sin anuncios ni esperas.
+    - Créditos: Cada búsqueda consume 20 créditos. Bono inicial de 200 gratis. Se pueden comprar packs o suscripción PRO.
+    
+    Instrucciones:
+    - Responde de forma amable, profesional y concisa.
+    - Si el usuario pregunta algo sobre dropshipping en general, usa tu conocimiento experto.
+    - Si pregunta sobre la plataforma, usa la información de arriba.
+    - Mantén las respuestas breves para un chat.
+    - Responde siempre en español.
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: [
+        ...chatHistory.map(msg => ({
+          role: msg.role === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }],
+        })),
+        { role: 'user', parts: [{ text: `${context}\n\nUsuario: ${userMessage}` }] }
+      ],
+    });
+    return response.text || "Lo siento, tuve un problema al procesar tu mensaje. ¿Puedes intentarlo de nuevo?";
+  } catch (error) {
+    console.error("Error in support chat:", error);
+    return "Lo siento, tuve un problema al procesar tu mensaje. ¿Puedes intentarlo de nuevo?";
   }
 }
