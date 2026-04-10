@@ -123,6 +123,7 @@ function MainApp() {
     if (saved) return parseInt(saved);
     return Math.floor(Math.random() * (85 - 35 + 1)) + 35;
   });
+  const [avatarSeeds, setAvatarSeeds] = useState([10, 20, 30]);
 
   const DAILY_LIMIT = 5;
   const today = new Date().toISOString().split('T')[0];
@@ -154,6 +155,16 @@ function MainApp() {
         localStorage.setItem('activeUsers', finalValue.toString());
         return finalValue;
       });
+
+      // Occasionally change one avatar
+      if (Math.random() > 0.7) {
+        setAvatarSeeds(prev => {
+          const newSeeds = [...prev];
+          const indexToChange = Math.floor(Math.random() * 3);
+          newSeeds[indexToChange] = Math.floor(Math.random() * 1000);
+          return newSeeds;
+        });
+      }
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -1207,9 +1218,19 @@ function MainApp() {
             className="flex items-center justify-center gap-4 text-xs font-bold text-slate-400 mb-12"
           >
             <div className="flex -space-x-2">
-              {[1, 2, 3].map(i => (
-                <img key={i} src={`https://picsum.photos/seed/user${i}/32/32`} className="w-6 h-6 rounded-full border-2 border-white" referrerPolicy="no-referrer" />
-              ))}
+              <AnimatePresence mode="popLayout">
+                {avatarSeeds.map((seed, i) => (
+                  <motion.img 
+                    key={`${i}-${seed}`}
+                    initial={{ opacity: 0, scale: 0.5, x: -10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.5, x: 10 }}
+                    src={`https://picsum.photos/seed/${seed}/32/32`} 
+                    className="w-6 h-6 rounded-full border-2 border-white shadow-sm" 
+                    referrerPolicy="no-referrer" 
+                  />
+                ))}
+              </AnimatePresence>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
