@@ -4,14 +4,25 @@
  * Version: 1.1.1
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
 import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, handleFirestoreError, FirestoreOperationType, sendEmailVerification, reload, getMessagingInstance, getToken, onMessage } from './firebase';
 import { doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp, collection, addDoc, query, orderBy, limit } from 'firebase/firestore';
-import ChatSupport from './components/ChatSupport';
+
+const ChatSupport = lazy(() => import('./components/ChatSupport'));
+
+// Memoized Markdown component to prevent unnecessary re-renders
+const MemoizedMarkdown = React.memo(({ content }: { content: string }) => (
+  <div className="prose prose-slate max-w-none 
+    prose-headings:text-indigo-700 prose-headings:font-bold
+    prose-p:text-slate-700 prose-li:text-slate-700">
+    <Markdown>{content}</Markdown>
+  </div>
+));
+MemoizedMarkdown.displayName = 'MemoizedMarkdown';
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
@@ -91,6 +102,10 @@ function MainApp() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
+  
+  // Performance: Result Caching
+  const [recommendationCache, setRecommendationCache] = useState<Record<string, string>>({});
+  const [analysisCache, setAnalysisCache] = useState<Record<string, string>>({});
 
   const isProAccount = userData?.isPro || 
     user?.email === 'yosefamse@gmail.com' || 
@@ -443,10 +458,20 @@ function MainApp() {
   };
 
   const performSearch = async () => {
+    const cacheKey = `${niche}-${budget}`;
+    if (recommendationCache[cacheKey]) {
+      setResult(recommendationCache[cacheKey]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setResult(null);
     const recommendations = await getProductRecommendations(niche, budget);
     setResult(recommendations);
+    
+    // Update cache
+    setRecommendationCache(prev => ({ ...prev, [cacheKey]: recommendations }));
 
     if (user && !(user as any).isGuest) {
       const userRef = doc(db, 'users', user.uid);
@@ -525,12 +550,23 @@ function MainApp() {
     e.preventDefault();
     if (!productToAnalyze) return;
 
+    const cacheKey = `${productToAnalyze}-${targetRegion}`;
+    if (analysisCache[cacheKey]) {
+      setCompetitiveResult(analysisCache[cacheKey]);
+      setTimeout(() => {
+        const element = document.getElementById('competitive-analysis-result');
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return;
+    }
+
     setAnalyzingCompetitors(true);
     setCompetitiveResult(null);
 
     try {
       const analysis = await getCompetitiveAnalysis(productToAnalyze, targetRegion);
       setCompetitiveResult(analysis);
+      setAnalysisCache(prev => ({ ...prev, [cacheKey]: analysis }));
       
       // Scroll to analysis
       setTimeout(() => {
@@ -713,7 +749,12 @@ function MainApp() {
                   )}
                 </div>
                 <div className="flex items-center gap-2 bg-slate-50 p-1 pr-3 rounded-full border border-slate-200">
-                  <img src={user.photoURL || ''} alt={user.displayName || ''} className="w-8 h-8 rounded-full border border-slate-200" />
+                  <img 
+                    src={user.photoURL || ''} 
+                    alt={user.displayName || ''} 
+                    className="w-8 h-8 rounded-full border border-slate-200" 
+                    loading="lazy"
+                  />
                   <span className="text-sm font-medium text-slate-700 hidden sm:inline">{user.displayName?.split(' ')[0]}</span>
                   <button onClick={handleLogout} className="p-1 hover:text-red-600 transition-colors">
                     <LogOut className="w-4 h-4" />
@@ -1218,7 +1259,7 @@ function MainApp() {
                   prose-li:text-slate-600 prose-li:text-lg
                   prose-img:rounded-3xl prose-img:shadow-lg
                   prose-blockquote:border-l-4 prose-blockquote:border-indigo-500 prose-blockquote:bg-indigo-50/50 prose-blockquote:p-4 prose-blockquote:rounded-r-2xl prose-blockquote:italic">
-                  <Markdown>{result}</Markdown>
+                  <MemoizedMarkdown content={result} />
                 </div>
 
                 {/* Feedback Buttons */}
@@ -1367,7 +1408,7 @@ function MainApp() {
                         <div className="prose prose-slate max-w-none 
                           prose-headings:text-indigo-700 prose-headings:font-bold
                           prose-p:text-slate-700 prose-li:text-slate-700">
-                          <Markdown>{competitiveResult}</Markdown>
+                          <MemoizedMarkdown content={competitiveResult} />
                         </div>
 
                         {/* Feedback for Competitive Analysis */}
@@ -1647,7 +1688,9 @@ function MainApp() {
         </div>
       </footer>
 
-      <ChatSupport />
+      <Suspense fallback={<div className="fixed bottom-6 right-6 w-12 h-12 bg-slate-200 animate-pulse rounded-2xl" />}>
+        <ChatSupport />
+      </Suspense>
     </div>
   );
 }
