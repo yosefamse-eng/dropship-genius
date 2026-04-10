@@ -76,6 +76,10 @@ function MainApp() {
   const [analyzingCompetitors, setAnalyzingCompetitors] = useState(false);
   const [productToAnalyze, setProductToAnalyze] = useState('');
   const [targetRegion, setTargetRegion] = useState('Global');
+  const [feedbackStatus, setFeedbackStatus] = useState<{[key: string]: 'up' | 'down' | null}>({});
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
   const isProAccount = userData?.isPro || 
     user?.email === 'yosefamse@gmail.com' || 
@@ -492,6 +496,52 @@ function MainApp() {
       console.error("Error in competitive analysis:", error);
     } finally {
       setAnalyzingCompetitors(false);
+    }
+  };
+
+  const handleRateResult = async (id: string, rating: 'up' | 'down') => {
+    if (!user) {
+      handleLogin();
+      return;
+    }
+
+    setFeedbackStatus(prev => ({ ...prev, [id]: rating }));
+
+    try {
+      const feedbackRef = collection(db, 'feedback');
+      await addDoc(feedbackRef, {
+        userId: user.uid,
+        resultId: id,
+        rating,
+        niche,
+        timestamp: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Error saving rating:", error);
+    }
+  };
+
+  const handleSubmitDetailedFeedback = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackText || !user) return;
+
+    setSubmittingFeedback(true);
+    try {
+      const feedbackRef = collection(db, 'detailed_feedback');
+      await addDoc(feedbackRef, {
+        userId: user.uid,
+        text: feedbackText,
+        context: { niche, budget, productToAnalyze, targetRegion },
+        timestamp: serverTimestamp()
+      });
+      alert("¡Gracias por tus comentarios! Nos ayudan a mejorar.");
+      setFeedbackText('');
+      setShowFeedbackModal(false);
+    } catch (error) {
+      console.error("Error saving detailed feedback:", error);
+      alert("Hubo un error al enviar tus comentarios. Inténtalo de nuevo.");
+    } finally {
+      setSubmittingFeedback(false);
     }
   };
 
@@ -1081,6 +1131,33 @@ function MainApp() {
                   <Markdown>{result}</Markdown>
                 </div>
 
+                {/* Feedback Buttons */}
+                <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-bold text-slate-500">¿Te fue útil este análisis?</span>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleRateResult('main_result', 'up')}
+                        className={`p-2 rounded-xl border transition-all ${feedbackStatus['main_result'] === 'up' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-emerald-500'}`}
+                      >
+                        <CheckCircle2 className="w-5 h-5" />
+                      </button>
+                      <button 
+                        onClick={() => handleRateResult('main_result', 'down')}
+                        className={`p-2 rounded-xl border transition-all ${feedbackStatus['main_result'] === 'down' ? 'bg-red-50 border-red-200 text-red-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-red-500'}`}
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setShowFeedbackModal(true)}
+                    className="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-2"
+                  >
+                    Sugerir mejoras
+                  </button>
+                </div>
+
                 <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
                     <DollarSign className="w-8 h-8 text-indigo-600 mb-4" />
@@ -1202,6 +1279,33 @@ function MainApp() {
                           prose-p:text-slate-700 prose-li:text-slate-700">
                           <Markdown>{competitiveResult}</Markdown>
                         </div>
+
+                        {/* Feedback for Competitive Analysis */}
+                        <div className="mt-8 pt-6 border-t border-indigo-100 flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <span className="text-sm font-bold text-indigo-600/60">¿Análisis preciso?</span>
+                            <div className="flex gap-2">
+                              <button 
+                                onClick={() => handleRateResult('comp_analysis', 'up')}
+                                className={`p-2 rounded-xl border transition-all ${feedbackStatus['comp_analysis'] === 'up' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-white/50 border-indigo-200 text-indigo-400 hover:text-emerald-500'}`}
+                              >
+                                <CheckCircle2 className="w-5 h-5" />
+                              </button>
+                              <button 
+                                onClick={() => handleRateResult('comp_analysis', 'down')}
+                                className={`p-2 rounded-xl border transition-all ${feedbackStatus['comp_analysis'] === 'down' ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white/50 border-indigo-200 text-indigo-400 hover:text-red-500'}`}
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => setShowFeedbackModal(true)}
+                            className="text-sm font-bold text-indigo-600 hover:text-indigo-700"
+                          >
+                            Reportar error
+                          </button>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1301,6 +1405,64 @@ function MainApp() {
             ))}
           </div>
         </div>
+        {/* Feedback Modal */}
+        <AnimatePresence>
+          {showFeedbackModal && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[60] flex items-center justify-center p-4"
+            >
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                className="bg-white w-full max-w-lg rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden"
+              >
+                <button 
+                  onClick={() => setShowFeedbackModal(false)}
+                  className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+
+                <div className="bg-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+
+                <h2 className="text-2xl font-black text-slate-900 mb-2">Tu opinión nos ayuda a crecer</h2>
+                <p className="text-slate-500 mb-8">¿Cómo podemos mejorar nuestras recomendaciones o análisis? Tu feedback va directo a nuestro equipo de desarrollo.</p>
+
+                <form onSubmit={handleSubmitDetailedFeedback} className="space-y-6">
+                  <textarea 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 min-h-[150px] outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-slate-700 placeholder:text-slate-400"
+                    placeholder="Escribe aquí tus sugerencias, errores encontrados o ideas..."
+                    value={feedbackText}
+                    onChange={(e) => setFeedbackText(e.target.value)}
+                    required
+                  />
+                  <button 
+                    type="submit"
+                    disabled={submittingFeedback || !feedbackText}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2"
+                  >
+                    {submittingFeedback ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Rocket className="w-5 h-5" />
+                        Enviar Comentarios
+                      </>
+                    )}
+                  </button>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       <footer className="bg-white border-t border-slate-200 py-12 mt-20">
