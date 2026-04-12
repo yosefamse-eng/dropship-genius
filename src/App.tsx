@@ -1488,17 +1488,17 @@ function MainApp() {
                       <motion.div 
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        whileHover={{ scale: 1.05, rotate: -2 }}
-                        className="relative w-28 h-28 md:w-32 md:h-32 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 bg-slate-100"
+                        whileHover={{ y: -4 }}
+                        className="relative w-28 h-28 md:w-32 md:h-32 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 bg-slate-100 group cursor-pointer"
                       >
                         <img 
-                          src={result.products[0].imageUrl || `https://loremflickr.com/200/200/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`}
+                          src={result.products[0].imageUrl || `https://loremflickr.com/400/400/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`}
                           alt={result.products[0].name}
-                          className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
+                          className="w-full h-full object-cover opacity-0 transition-all duration-700 group-hover:scale-115"
                           referrerPolicy="no-referrer"
                           onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                           onError={(e) => {
-                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(result.products[0].name)}/200/200`;
+                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(result.products[0].name)}/400/400`;
                             e.currentTarget.classList.remove('opacity-0');
                           }}
                         />
@@ -1921,12 +1921,12 @@ function MainApp() {
                         
                         <div className="relative z-10 mb-12">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                            <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200">
+                            <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200 group cursor-zoom-in">
                               <img 
                                 key={`${productToAnalyze}-main`}
                                 src={`https://loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze)}`} 
                                 alt={productToAnalyze}
-                                className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
+                                className="w-full h-full object-cover opacity-0 transition-all duration-1000 group-hover:scale-110"
                                 referrerPolicy="no-referrer"
                                 loading="lazy"
                                 decoding="async"
