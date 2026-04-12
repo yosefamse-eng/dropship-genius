@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings, BarChart3, Truck } from 'lucide-react';
+import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings, BarChart3, Truck, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
@@ -1484,12 +1484,35 @@ function MainApp() {
                   className="relative flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8 pb-10 border-b border-slate-100/50"
                 >
                   <div className="flex items-center gap-6">
-                    <motion.div 
-                      whileHover={{ scale: 1.05, rotate: 5 }}
-                      className="bg-gradient-to-br from-brand-600 to-indigo-800 p-5 rounded-[2rem] shadow-2xl shadow-brand-200"
-                    >
-                      <TrendingUp className="w-10 h-10 text-white" />
-                    </motion.div>
+                    {result.products && result.products.length > 0 ? (
+                      <motion.div 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        whileHover={{ scale: 1.05, rotate: -2 }}
+                        className="relative w-28 h-28 md:w-32 md:h-32 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 bg-slate-100"
+                      >
+                        <img 
+                          src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/200/200/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`)}&output=webp&q=80`}
+                          alt={result.products[0].name}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(result.products[0].name)}/200/200`;
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-600/40 to-transparent" />
+                        <div className="absolute top-1 left-1 right-1 bg-brand-600 text-white text-[8px] font-black uppercase tracking-tighter text-center py-0.5 rounded-full shadow-lg">
+                          GANADOR
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div 
+                        whileHover={{ scale: 1.05, rotate: 5 }}
+                        className="bg-gradient-to-br from-brand-600 to-indigo-800 p-5 rounded-[2rem] shadow-2xl shadow-brand-200"
+                      >
+                        <TrendingUp className="w-10 h-10 text-white" />
+                      </motion.div>
+                    )}
                     <div>
                       <div className="flex flex-wrap gap-2 mb-3">
                         <span className="px-4 py-1.5 rounded-full bg-brand-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
@@ -1530,7 +1553,7 @@ function MainApp() {
                   </div>
                 </div>
 
-                {/* Product Cards Grid */}
+                {/* Product Cards Grid - All identical now */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                   {result.products?.map((product: any, idx: number) => (
                     <motion.div 
@@ -1543,10 +1566,12 @@ function MainApp() {
                       <div className="relative h-64 overflow-hidden bg-slate-100">
                         <img 
                           key={product.name}
-                          src={`https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')},product`} 
+                          src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`)}&output=webp&q=80`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(product.name)}/800/600`;
                           }}
@@ -1555,6 +1580,11 @@ function MainApp() {
                           <TrendingUp className="w-4 h-4 text-brand-600" />
                           <span className="text-xs font-black text-slate-900">{product.trendLevel}/10</span>
                         </div>
+                        {idx === 0 && (
+                          <div className="absolute top-4 left-4 bg-brand-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                            TOP #1
+                          </div>
+                        )}
                       </div>
                       <div className="p-8 flex-1 flex flex-col">
                         <h3 className="text-2xl font-black text-slate-900 mb-3 line-clamp-1 tracking-tight">{product.name}</h3>
@@ -1773,10 +1803,12 @@ function MainApp() {
                           <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800 animate-pulse-slow">
                             <img 
                               key={productToAnalyze}
-                              src={`https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}/800/600`} 
+                              src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/800/600/${(productKeywordToAnalyze || productToAnalyze).replace(/\s+/g, ',')}`)}&output=webp&q=80`} 
                               alt={productToAnalyze}
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
                               referrerPolicy="no-referrer"
+                              loading="lazy"
+                              decoding="async"
                               onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
                               onError={(e) => {
                                 e.currentTarget.src = `https://placehold.co/800x600/1e293b/94a3b8?text=${encodeURIComponent(productToAnalyze)}`;
@@ -1880,10 +1912,12 @@ function MainApp() {
                             <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200">
                               <img 
                                 key={`${productToAnalyze}-main`}
-                                src={`https://loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze)},product`} 
+                                src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze)}`)}&output=webp&q=80`} 
                                 alt={productToAnalyze}
                                 className="w-full h-full object-cover"
                                 referrerPolicy="no-referrer"
+                                loading="lazy"
+                                decoding="async"
                                 onError={(e) => {
                                   e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-main/1200/800`;
                                 }}
@@ -1905,10 +1939,12 @@ function MainApp() {
                                 <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200">
                                   <img 
                                     key={`${productToAnalyze}-side1`}
-                                    src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},detail`} 
+                                    src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},detail`)}&output=webp&q=80`} 
                                     alt={productToAnalyze}
                                     className="w-full h-full object-cover"
                                     referrerPolicy="no-referrer"
+                                    loading="lazy"
+                                    decoding="async"
                                     onError={(e) => {
                                       e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side1/600/600`;
                                     }}
@@ -1917,10 +1953,12 @@ function MainApp() {
                                 <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200">
                                   <img 
                                     key={`${productToAnalyze}-side2`}
-                                    src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},usage`} 
+                                    src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},usage`)}&output=webp&q=80`} 
                                     alt={productToAnalyze}
                                     className="w-full h-full object-cover"
                                     referrerPolicy="no-referrer"
+                                    loading="lazy"
+                                    decoding="async"
                                     onError={(e) => {
                                       e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side2/600/600`;
                                     }}
