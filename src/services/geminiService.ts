@@ -52,7 +52,14 @@ export async function getCompetitiveAnalysis(productName: string, region: string
     const prompt = `Actúa como un analista de mercado experto en e-commerce, especialista en SEO y estratega de publicidad digital. 
     Realiza un análisis competitivo y de palabras clave profundo para el siguiente producto: "${productName}" en la región: "${region}".
     
-    Tu análisis DEBE incluir:
+    Tu análisis DEBE ser un objeto JSON con la siguiente estructura exacta:
+    {
+      "mainAnalysis": "Markdown profesional con los puntos 1 al 8",
+      "trafficAnalysis": "Markdown o tabla con el punto 9 (Tráfico Web)",
+      "socialEngagement": "Markdown o tabla con el punto 10 (Engagement Social)"
+    }
+
+    Puntos a cubrir:
     1. **Precios de la Competencia**: Rango de precios en Amazon, AliExpress y tiendas Shopify populares en ${region}.
     2. **Estrategias de Marketing**: Cómo lo están vendiendo los líderes en esta región (ej: anuncios de Facebook, colaboraciones con influencers, SEO).
     3. **Análisis de Palabras Clave (SEO & SEM)**:
@@ -65,8 +72,10 @@ export async function getCompetitiveAnalysis(productName: string, region: string
     6. **Sentimiento en Redes Sociales**: Qué dice la gente en TikTok, Instagram y Reddit sobre este tipo de producto en ${region} (puntos positivos y quejas comunes).
     7. **Costos Estimados de Marketing**: Un desglose de los costos potenciales para lanzar una campaña inicial en esta región (CPC promedio, presupuesto diario recomendado, etc.).
     8. **Oportunidad de Diferenciación**: Cómo puede un nuevo vendedor destacar frente a la competencia actual en ${region}.
+    9. **Análisis de Tráfico Web de Competidores**: Estimación del tráfico mensual de los 3 principales competidores, fuentes de tráfico (Directo, Social, Búsqueda, Referidos) y tasa de rebote estimada.
+    10. **Engagement en Redes Sociales**: Análisis de la frecuencia de publicación, tipos de contenido con más interacción (likes, comentarios, compartidos) y crecimiento de seguidores de los competidores líderes.
     
-    Responde en un formato Markdown profesional, estructurado y en español. Usa emojis para hacer la lectura amena y tablas si es necesario para comparar palabras clave.`;
+    Devuelve SOLO el JSON, sin bloques de código ni texto adicional. Asegúrate de que el JSON sea válido.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-flash-latest",
@@ -77,7 +86,8 @@ export async function getCompetitiveAnalysis(productName: string, region: string
       throw new Error("Error al generar el análisis competitivo.");
     }
     
-    return response.text;
+    const cleanJson = response.text.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(cleanJson);
   } catch (error: any) {
     console.error("Error calling AI analysis:", error);
     throw error;

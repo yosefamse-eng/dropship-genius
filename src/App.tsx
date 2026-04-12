@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings } from 'lucide-react';
+import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings, BarChart3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
@@ -97,7 +97,7 @@ function MainApp() {
   const [showAdModal, setShowAdModal] = useState(false);
   const [adCountdown, setAdCountdown] = useState(5);
   const [adCallback, setAdCallback] = useState<(() => void) | null>(null);
-  const [competitiveResult, setCompetitiveResult] = useState<string | null>(null);
+  const [competitiveResult, setCompetitiveResult] = useState<any | null>(null);
   const [analyzingCompetitors, setAnalyzingCompetitors] = useState(false);
   const [productToAnalyze, setProductToAnalyze] = useState('');
   const [targetRegion, setTargetRegion] = useState('Global');
@@ -111,7 +111,7 @@ function MainApp() {
   
   // Performance: Result Caching
   const [recommendationCache, setRecommendationCache] = useState<Record<string, any>>({});
-  const [analysisCache, setAnalysisCache] = useState<Record<string, string>>({});
+  const [analysisCache, setAnalysisCache] = useState<Record<string, any>>({});
 
   const isProAccount = userData?.isPro || 
     user?.email === 'yosefamse@gmail.com' || 
@@ -1836,8 +1836,37 @@ function MainApp() {
                         </div>
                         
                         <div className="prose prose-slate max-w-none">
-                          <MemoizedMarkdown content={competitiveResult} />
+                          <MemoizedMarkdown content={competitiveResult.mainAnalysis || competitiveResult} />
                         </div>
+
+                        {/* New Sections: Traffic & Engagement */}
+                        {competitiveResult.trafficAnalysis && (
+                          <div className="mt-12 pt-12 border-t border-slate-100">
+                            <div className="flex items-center gap-3 mb-6">
+                              <div className="bg-indigo-100 p-2 rounded-lg">
+                                <BarChart3 className="w-5 h-5 text-indigo-600" />
+                              </div>
+                              <h5 className="text-xl font-black text-slate-900">Análisis de Tráfico Web</h5>
+                            </div>
+                            <div className="prose prose-slate max-w-none bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                              <MemoizedMarkdown content={competitiveResult.trafficAnalysis} />
+                            </div>
+                          </div>
+                        )}
+
+                        {competitiveResult.socialEngagement && (
+                          <div className="mt-8">
+                            <div className="flex items-center gap-3 mb-6">
+                              <div className="bg-pink-100 p-2 rounded-lg">
+                                <Share2 className="w-5 h-5 text-pink-600" />
+                              </div>
+                              <h5 className="text-xl font-black text-slate-900">Engagement en Redes Sociales</h5>
+                            </div>
+                            <div className="prose prose-slate max-w-none bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                              <MemoizedMarkdown content={competitiveResult.socialEngagement} />
+                            </div>
+                          </div>
+                        )}
 
                         {/* Feedback for Competitive Analysis */}
                         <div className="mt-8 pt-6 border-t border-indigo-100 flex items-center justify-between">
