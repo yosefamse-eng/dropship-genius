@@ -1492,7 +1492,7 @@ function MainApp() {
                         className="relative w-28 h-28 md:w-32 md:h-32 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 bg-slate-100"
                       >
                         <img 
-                          src={`https://loremflickr.com/200/200/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`}
+                          src={result.products[0].imageUrl || `https://loremflickr.com/200/200/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`}
                           alt={result.products[0].name}
                           className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
                           referrerPolicy="no-referrer"
@@ -1571,7 +1571,7 @@ function MainApp() {
                         
                         <img 
                           key={product.name}
-                          src={`https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`} 
+                          src={product.imageUrl || `https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 group-hover:brightness-105 transition-all duration-1000 ease-out opacity-0"
                           referrerPolicy="no-referrer"
