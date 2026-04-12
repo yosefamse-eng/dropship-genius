@@ -21,7 +21,8 @@ export async function getProductRecommendations(niche: string, budget: string, s
           "channelFit": 9,
           "whyWinner": "Explicación detallada de por qué triunfa en ${salesChannel}.",
           "targetAudience": "Descripción del público objetivo.",
-          "marketingStrategy": "Estrategia específica para ${salesChannel}."
+          "marketingStrategy": "Estrategia específica para ${salesChannel}.",
+          "searchKeyword": "2-3 palabras clave en inglés separadas por comas que describan perfectamente el producto para buscar una imagen real (ej: 'smart,watch', 'desk,lamp', 'hula,hoop')."
         }
       ],
       "masterTip": "Un consejo maestro final sobre cómo escalar este nicho."
@@ -57,7 +58,12 @@ export async function getCompetitiveAnalysis(productName: string, region: string
       "mainAnalysis": "Markdown profesional con los puntos 1 al 8",
       "trafficAnalysis": "Markdown o tabla con el punto 9 (Tráfico Web)",
       "socialEngagement": "Markdown o tabla con el punto 10 (Engagement Social)",
-      "supplierAnalysis": "Markdown o tabla con el punto 11 (Análisis de Proveedores)"
+      "supplierAnalysis": "Markdown o tabla con el punto 11 (Análisis de Proveedores)",
+      "searchKeywords": {
+        "main": "2-3 palabras clave en inglés separadas por comas para la imagen principal (ej: 'hula,hoop,fitness')",
+        "side1": "2-3 palabras clave en inglés para una imagen de detalle o gadget (ej: 'electronic,sensor')",
+        "side2": "2-3 palabras clave en inglés para una imagen de estilo de vida (ej: 'woman,exercising')"
+      }
     }
 
     Puntos a cubrir:

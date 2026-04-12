@@ -1538,7 +1538,7 @@ function MainApp() {
                       <div className="relative h-64 overflow-hidden bg-slate-200 animate-pulse-slow">
                         <img 
                           key={product.name}
-                          src={`https://loremflickr.com/800/600/${encodeURIComponent(product.name.replace(/\s+/g, ','))},product/all`} 
+                          src={`https://loremflickr.com/800/600/${encodeURIComponent(product.searchKeyword || product.name.replace(/\s+/g, ','))}`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
@@ -1586,7 +1586,7 @@ function MainApp() {
                         <h3 className="text-4xl md:text-5xl font-black tracking-tighter">Consejo Maestro</h3>
                       </div>
                     </div>
-                    <div className="prose prose-invert max-w-none text-white text-3xl md:text-4xl leading-tight font-black border-l-8 border-brand-400 pl-10 py-4 drop-shadow-sm">
+                    <div className="prose prose-invert max-w-none text-white text-4xl md:text-6xl leading-tight font-black border-l-[12px] border-brand-400 pl-10 py-6 drop-shadow-2xl">
                       <MemoizedMarkdown content={result.masterTip} />
                     </div>
                   </div>
@@ -1766,7 +1766,7 @@ function MainApp() {
                           <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800 animate-pulse-slow">
                             <img 
                               key={productToAnalyze}
-                              src={`https://loremflickr.com/800/600/${encodeURIComponent(productToAnalyze.replace(/\s+/g, ','))},product/all`} 
+                              src={`https://loremflickr.com/800/600/${encodeURIComponent(productToAnalyze.replace(/\s+/g, ','))}`} 
                               alt={productToAnalyze}
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
                               referrerPolicy="no-referrer"
@@ -1863,7 +1863,7 @@ function MainApp() {
                             <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200 animate-pulse-slow">
                               <img 
                                 key={`${productToAnalyze}-main`}
-                                src={`https://loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze.replace(/\s+/g, ','))},product/all`} 
+                                src={`https://loremflickr.com/1200/800/${encodeURIComponent(competitiveResult.searchKeywords?.main || productToAnalyze.replace(/\s+/g, ','))}`} 
                                 alt={productToAnalyze}
                                 className="w-full h-full object-cover"
                                 referrerPolicy="no-referrer"
@@ -1886,7 +1886,7 @@ function MainApp() {
                               <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200 animate-pulse-slow">
                                 <img 
                                   key={`${productToAnalyze}-side1`}
-                                  src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze.replace(/\s+/g, ','))},gadget/all`} 
+                                  src={`https://loremflickr.com/600/600/${encodeURIComponent(competitiveResult.searchKeywords?.side1 || 'product,detail')}`} 
                                   alt={productToAnalyze}
                                   className="w-full h-full object-cover"
                                   referrerPolicy="no-referrer"
@@ -1896,7 +1896,7 @@ function MainApp() {
                               <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200 animate-pulse-slow">
                                 <img 
                                   key={`${productToAnalyze}-side2`}
-                                  src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze.replace(/\s+/g, ','))},lifestyle/all`} 
+                                  src={`https://loremflickr.com/600/600/${encodeURIComponent(competitiveResult.searchKeywords?.side2 || 'lifestyle,product')}`} 
                                   alt={productToAnalyze}
                                   className="w-full h-full object-cover"
                                   referrerPolicy="no-referrer"
