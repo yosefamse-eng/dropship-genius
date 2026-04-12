@@ -100,6 +100,7 @@ function MainApp() {
   const [competitiveResult, setCompetitiveResult] = useState<any | null>(null);
   const [analyzingCompetitors, setAnalyzingCompetitors] = useState(false);
   const [productToAnalyze, setProductToAnalyze] = useState('');
+  const [productKeywordToAnalyze, setProductKeywordToAnalyze] = useState('');
   const [targetRegion, setTargetRegion] = useState('Global');
   const [feedbackStatus, setFeedbackStatus] = useState<{[key: string]: 'up' | 'down' | null}>({});
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -144,49 +145,57 @@ function MainApp() {
       name: "Carlos R.",
       role: "Dropshipper 7-figuras",
       text: "DropshipGenius me ahorra horas de investigación. El primer producto que analicé me generó $500 en ventas el primer día.",
-      avatar: "https://picsum.photos/seed/carlos/100/100"
+      avatar: "https://picsum.photos/seed/carlos/100/100",
+      productImage: "https://loremflickr.com/400/300/watch,smartwatch"
     },
     {
       name: "Elena M.",
       role: "E-commerce Manager",
       text: "La precisión de la IA para detectar tendencias en TikTok es increíble. Es como tener un equipo de analistas trabajando 24/7.",
-      avatar: "https://picsum.photos/seed/elena/100/100"
+      avatar: "https://picsum.photos/seed/elena/100/100",
+      productImage: "https://loremflickr.com/400/300/gadget,tech"
     },
     {
       name: "Javier S.",
       role: "Emprendedor Digital",
       text: "El análisis de competencia y costos es lo que marca la diferencia. Ahora sé exactamente cuánto puedo gastar en ads.",
-      avatar: "https://picsum.photos/seed/javier/100/100"
+      avatar: "https://picsum.photos/seed/javier/100/100",
+      productImage: "https://loremflickr.com/400/300/fitness,equipment"
     },
     {
       name: "Sofia L.",
       role: "Tienda de Moda",
       text: "Encontré un nicho de joyería minimalista que no sabía que existía. Mis ventas han subido un 40%.",
-      avatar: "https://picsum.photos/seed/sofia/100/100"
+      avatar: "https://picsum.photos/seed/sofia/100/100",
+      productImage: "https://loremflickr.com/400/300/jewelry,gold"
     },
     {
       name: "Miguel A.",
       role: "Especialista en Ads",
       text: "Los públicos que sugiere la IA son oro puro. Mi ROAS ha pasado de 2.1 a 4.5 en dos semanas.",
-      avatar: "https://picsum.photos/seed/miguel/100/100"
+      avatar: "https://picsum.photos/seed/miguel/100/100",
+      productImage: "https://loremflickr.com/400/300/gaming,headset"
     },
     {
       name: "Lucia P.",
       role: "Side Hustle",
       text: "Como principiante, esto me dio la confianza para lanzar mi primera tienda. Ya tengo mis primeras 10 ventas.",
-      avatar: "https://picsum.photos/seed/lucia/100/100"
+      avatar: "https://picsum.photos/seed/lucia/100/100",
+      productImage: "https://loremflickr.com/400/300/kitchen,gadget"
     },
     {
       name: "Roberto T.",
       role: "Agencia E-com",
       text: "Usamos DropshipGenius para todos nuestros clientes. Es la herramienta de validación más rápida del mercado.",
-      avatar: "https://picsum.photos/seed/roberto/100/100"
+      avatar: "https://picsum.photos/seed/roberto/100/100",
+      productImage: "https://loremflickr.com/400/300/drone,camera"
     },
     {
       name: "Ana G.",
       role: "Vendedora Amazon",
       text: "Incluso para Amazon FBA, las tendencias que detecta son súper útiles para encontrar nuevos productos.",
-      avatar: "https://picsum.photos/seed/ana/100/100"
+      avatar: "https://picsum.photos/seed/ana/100/100",
+      productImage: "https://loremflickr.com/400/300/pet,dog,toy"
     }
   ], []);
 
@@ -516,6 +525,7 @@ function MainApp() {
     setResult(null);
     setCompetitiveResult(null);
     setProductToAnalyze('');
+    setProductKeywordToAnalyze('');
     
     if (!user) {
       if (localCredits < 20) {
@@ -662,8 +672,9 @@ function MainApp() {
     }
   };
 
-  const handleAnalyzeProduct = (productName: string) => {
+  const handleAnalyzeProduct = (productName: string, keyword?: string) => {
     setProductToAnalyze(productName);
+    setProductKeywordToAnalyze(keyword || '');
     setTimeout(() => {
       const element = document.getElementById('competitive-analysis-tool');
       element?.scrollIntoView({ behavior: 'smooth' });
@@ -1010,26 +1021,36 @@ function MainApp() {
                     </div>
                   ) : (
                     searchHistory.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => handleReRunSearch(item)}
-                        className="w-full text-left p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
-                            {item.budget.replace('_', ' ')}
-                          </span>
-                          <span className="text-[10px] text-slate-400">
-                            {item.timestamp?.toDate ? new Date(item.timestamp.toDate()).toLocaleDateString() : 'Reciente'}
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-slate-800 group-hover:text-indigo-700 transition-colors line-clamp-1">
-                          {item.niche}
-                        </h4>
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-2 italic">
-                          {item.result.substring(0, 100)}...
-                        </p>
-                      </button>
+                          <button
+                            key={item.id}
+                            onClick={() => handleReRunSearch(item)}
+                            className="w-full text-left p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group flex gap-4"
+                          >
+                            <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100">
+                              <img 
+                                src={`https://loremflickr.com/150/150/${encodeURIComponent(item.niche.split(' ')[0])},product`} 
+                                alt={item.niche}
+                                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                referrerPolicy="no-referrer"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-start mb-1">
+                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wider">
+                                  {item.budget.replace('_', ' ')}
+                                </span>
+                                <span className="text-[10px] text-slate-400">
+                                  {item.timestamp?.toDate ? new Date(item.timestamp.toDate()).toLocaleDateString() : 'Reciente'}
+                                </span>
+                              </div>
+                              <h4 className="font-bold text-slate-800 group-hover:text-indigo-700 transition-colors line-clamp-1 text-sm">
+                                {item.niche}
+                              </h4>
+                              <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1 italic">
+                                {item.result.substring(0, 60)}...
+                              </p>
+                            </div>
+                          </button>
                     ))
                   )}
                 </div>
@@ -1426,12 +1447,20 @@ function MainApp() {
                   key={n}
                   type="button"
                   onClick={() => setNiche(n)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                  className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all flex items-center gap-3 ${
                     niche === n 
                     ? 'bg-brand-600 text-white shadow-lg shadow-brand-200' 
                     : 'bg-white text-slate-500 hover:bg-brand-50 hover:text-brand-600 border border-slate-100'
                   }`}
                 >
+                  <div className="w-5 h-5 rounded-full overflow-hidden border border-slate-100 flex-shrink-0">
+                    <img 
+                      src={`https://loremflickr.com/50/50/${encodeURIComponent(n.toLowerCase())},product`} 
+                      alt={n}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
                   {n}
                 </button>
               ))}
@@ -1560,7 +1589,7 @@ function MainApp() {
                           </div>
                           
                           <button 
-                            onClick={() => handleAnalyzeProduct(product.name)}
+                            onClick={() => handleAnalyzeProduct(product.name, product.searchKeyword)}
                             className="w-full py-4 bg-slate-900 hover:bg-brand-600 text-white rounded-2xl font-black text-xs tracking-widest transition-all flex items-center justify-center gap-3 group/btn shadow-xl shadow-slate-200 hover:shadow-brand-200"
                           >
                             <Target className="w-5 h-5" />
@@ -1766,7 +1795,7 @@ function MainApp() {
                           <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800 animate-pulse-slow">
                             <img 
                               key={productToAnalyze}
-                              src={`https://loremflickr.com/800/600/${encodeURIComponent(productToAnalyze.replace(/\s+/g, ','))}`} 
+                              src={`https://loremflickr.com/800/600/${encodeURIComponent(productKeywordToAnalyze || productToAnalyze.replace(/\s+/g, ','))}`} 
                               alt={productToAnalyze}
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
                               referrerPolicy="no-referrer"
@@ -1778,7 +1807,10 @@ function MainApp() {
                               <h4 className="text-2xl font-black text-white">{productToAnalyze}</h4>
                             </div>
                             <button 
-                              onClick={() => setProductToAnalyze('')}
+                              onClick={() => {
+                                setProductToAnalyze('');
+                                setProductKeywordToAnalyze('');
+                              }}
                               className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-red-500/20 backdrop-blur-md rounded-xl text-white transition-colors border border-white/10"
                             >
                               <X className="w-5 h-5" />
@@ -1798,7 +1830,10 @@ function MainApp() {
                                 placeholder="Nombre del producto..."
                                 className="w-full bg-slate-900/50 border border-white/10 rounded-2xl pl-16 pr-6 py-6 text-white placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                                 value={productToAnalyze}
-                                onChange={(e) => setProductToAnalyze(e.target.value)}
+                                onChange={(e) => {
+                                  setProductToAnalyze(e.target.value);
+                                  setProductKeywordToAnalyze(''); // Reset keyword if manually typed
+                                }}
                               />
                             </div>
                           </div>
@@ -2092,6 +2127,18 @@ function MainApp() {
                         <div>
                           <p className="font-black text-slate-900 leading-none">{t.name}</p>
                           <p className="text-xs text-brand-600 font-bold mt-1">{t.role}</p>
+                        </div>
+                      </div>
+                      <div className="relative h-40 rounded-2xl overflow-hidden mb-6 border border-slate-100 bg-slate-50">
+                        <img 
+                          src={t.productImage} 
+                          alt="Producto Ganador" 
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+                        <div className="absolute bottom-3 left-3">
+                          <span className="text-[8px] font-black text-white uppercase tracking-widest bg-brand-600 px-2 py-1 rounded-md">Producto Ganador</span>
                         </div>
                       </div>
                       <p className="text-slate-600 italic leading-relaxed">"{t.text}"</p>
