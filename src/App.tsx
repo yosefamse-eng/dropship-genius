@@ -1537,7 +1537,7 @@ function MainApp() {
                     >
                       <div className="relative h-64 overflow-hidden">
                         <img 
-                          src={`https://picsum.photos/seed/${product.name.replace(/\s+/g, '-')}/800/600`} 
+                          src={`https://loremflickr.com/800/600/${encodeURIComponent(product.name)}`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
@@ -1579,8 +1579,8 @@ function MainApp() {
                       </div>
                       <h3 className="text-2xl font-black tracking-tight">Consejo Maestro</h3>
                     </div>
-                    <div className="prose prose-invert max-w-none text-slate-300 text-lg leading-relaxed italic">
-                      <MemoizedMarkdown content={`"${result.masterTip}"`} />
+                    <div className="prose prose-invert max-w-none text-white text-xl leading-relaxed font-black">
+                      <MemoizedMarkdown content={result.masterTip} />
                     </div>
                   </div>
                 </div>

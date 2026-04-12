@@ -100,4 +100,7 @@
     content: "“";
     @apply absolute top-4 left-6 text-8xl text-white/10 font-serif;
   }
+  .prose-invert p, .prose-invert li, .prose-invert strong {
+    @apply text-white;
+  }
 }
