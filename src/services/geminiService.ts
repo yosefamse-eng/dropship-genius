@@ -22,7 +22,7 @@ export async function getProductRecommendations(niche: string, budget: string, s
           "whyWinner": "Explicación detallada de por qué triunfa en ${salesChannel}.",
           "targetAudience": "Descripción del público objetivo.",
           "marketingStrategy": "Estrategia específica para ${salesChannel}.",
-          "searchKeyword": "2-3 palabras clave en inglés separadas por comas que describan perfectamente el producto para buscar una imagen real (ej: 'smart,watch', 'desk,lamp', 'hula,hoop')."
+          "searchKeyword": "2-3 palabras clave en inglés separadas por comas que describan perfectamente el producto (ej: 'smart,watch', 'desk,lamp', 'hula,hoop'). NO incluyas palabras como 'product' o 'photo'."
         }
       ],
       "masterTip": "Un consejo maestro final sobre cómo escalar este nicho."

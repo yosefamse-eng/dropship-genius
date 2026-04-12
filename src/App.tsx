@@ -1028,10 +1028,13 @@ function MainApp() {
                           >
                             <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100">
                               <img 
-                                src={`https://loremflickr.com/150/150/${encodeURIComponent(item.niche.split(' ')[0])},product`} 
+                                src={`https://loremflickr.com/150/150/${(item.niche.split(' ')[0])},product`} 
                                 alt={item.niche}
                                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                                 referrerPolicy="no-referrer"
+                                onError={(e) => {
+                                  e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(item.niche)}/150/150`;
+                                }}
                               />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -1455,10 +1458,13 @@ function MainApp() {
                 >
                   <div className="w-5 h-5 rounded-full overflow-hidden border border-slate-100 flex-shrink-0">
                     <img 
-                      src={`https://loremflickr.com/50/50/${encodeURIComponent(n.toLowerCase())},product`} 
+                      src={`https://loremflickr.com/50/50/${n.toLowerCase().replace(/\s+/g, ',')},product`} 
                       alt={n}
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(n)}/50/50`;
+                      }}
                     />
                   </div>
                   {n}
@@ -1567,11 +1573,15 @@ function MainApp() {
                       <div className="relative h-64 overflow-hidden bg-slate-200 animate-pulse-slow">
                         <img 
                           key={product.name}
-                          src={`https://loremflickr.com/800/600/${encodeURIComponent(product.searchKeyword || product.name.replace(/\s+/g, ','))}`} 
+                          src={`https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')},product`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
                           onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
+                          onError={(e) => {
+                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(product.name)}/800/600`;
+                            e.currentTarget.parentElement?.classList.remove('animate-pulse-slow');
+                          }}
                         />
                         <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg border border-white/20">
                           <TrendingUp className="w-4 h-4 text-brand-600" />
@@ -1795,11 +1805,15 @@ function MainApp() {
                           <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800 animate-pulse-slow">
                             <img 
                               key={productToAnalyze}
-                              src={`https://loremflickr.com/800/600/${encodeURIComponent(productKeywordToAnalyze || productToAnalyze.replace(/\s+/g, ','))}`} 
+                              src={`https://loremflickr.com/800/600/${(productKeywordToAnalyze || productToAnalyze).replace(/\s+/g, ',')},product`} 
                               alt={productToAnalyze}
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
                               referrerPolicy="no-referrer"
                               onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
+                              onError={(e) => {
+                                e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}/800/600`;
+                                e.currentTarget.parentElement?.classList.remove('animate-pulse-slow');
+                              }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                             <div className="absolute bottom-6 left-6">
@@ -1898,11 +1912,15 @@ function MainApp() {
                             <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200 animate-pulse-slow">
                               <img 
                                 key={`${productToAnalyze}-main`}
-                                src={`https://loremflickr.com/1200/800/${encodeURIComponent(competitiveResult.searchKeywords?.main || productToAnalyze.replace(/\s+/g, ','))}`} 
+                                src={`https://loremflickr.com/1200/800/${(competitiveResult.searchKeywords?.main || productToAnalyze).replace(/\s+/g, ',')},product`} 
                                 alt={productToAnalyze}
                                 className="w-full h-full object-cover"
                                 referrerPolicy="no-referrer"
                                 onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
+                                onError={(e) => {
+                                  e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-main/1200/800`;
+                                  e.currentTarget.parentElement?.classList.remove('animate-pulse-slow');
+                                }}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
                               <div className="absolute bottom-8 left-8 right-8">
@@ -1921,21 +1939,29 @@ function MainApp() {
                               <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200 animate-pulse-slow">
                                 <img 
                                   key={`${productToAnalyze}-side1`}
-                                  src={`https://loremflickr.com/600/600/${encodeURIComponent(competitiveResult.searchKeywords?.side1 || 'product,detail')}`} 
+                                  src={`https://loremflickr.com/600/600/${(competitiveResult.searchKeywords?.side1 || 'product,detail').replace(/\s+/g, ',')}`} 
                                   alt={productToAnalyze}
                                   className="w-full h-full object-cover"
                                   referrerPolicy="no-referrer"
                                   onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
+                                  onError={(e) => {
+                                    e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side1/600/600`;
+                                    e.currentTarget.parentElement?.classList.remove('animate-pulse-slow');
+                                  }}
                                 />
                               </div>
                               <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200 animate-pulse-slow">
                                 <img 
                                   key={`${productToAnalyze}-side2`}
-                                  src={`https://loremflickr.com/600/600/${encodeURIComponent(competitiveResult.searchKeywords?.side2 || 'lifestyle,product')}`} 
+                                  src={`https://loremflickr.com/600/600/${(competitiveResult.searchKeywords?.side2 || 'lifestyle,product').replace(/\s+/g, ',')}`} 
                                   alt={productToAnalyze}
                                   className="w-full h-full object-cover"
                                   referrerPolicy="no-referrer"
                                   onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
+                                  onError={(e) => {
+                                    e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side2/600/600`;
+                                    e.currentTarget.parentElement?.classList.remove('animate-pulse-slow');
+                                  }}
                                 />
                               </div>
                             </div>
@@ -2135,6 +2161,9 @@ function MainApp() {
                           alt="Producto Ganador" 
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(t.name)}/400/300`;
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
                         <div className="absolute bottom-3 left-3">
