@@ -96,6 +96,7 @@ function MainApp() {
   const [copied, setCopied] = useState(false);
   const [showAdModal, setShowAdModal] = useState(false);
   const [adCountdown, setAdCountdown] = useState(5);
+  const [adCallback, setAdCallback] = useState<(() => void) | null>(null);
   const [competitiveResult, setCompetitiveResult] = useState<string | null>(null);
   const [analyzingCompetitors, setAnalyzingCompetitors] = useState(false);
   const [productToAnalyze, setProductToAnalyze] = useState('');
@@ -193,6 +194,7 @@ function MainApp() {
   const today = new Date().toISOString().split('T')[0];
 
   const startAdTimer = (callback: () => void) => {
+    setAdCallback(() => callback);
     setShowAdModal(true);
     setAdCountdown(5);
     const timer = setInterval(() => {
@@ -685,22 +687,31 @@ function MainApp() {
     setAnalyzingCompetitors(true);
     setCompetitiveResult(null);
 
-    try {
-      const analysis = await getCompetitiveAnalysis(productToAnalyze, targetRegion);
-      setCompetitiveResult(analysis);
-      setAnalysisCache(prev => ({ ...prev, [cacheKey]: analysis }));
-      
-      // Scroll to analysis
-      setTimeout(() => {
-        const element = document.getElementById('competitive-analysis-result');
-        element?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } catch (error) {
-      console.error("Error in competitive analysis:", error);
-      showErrorToast(error);
-    } finally {
-      setAnalyzingCompetitors(false);
+    const performAnalysis = async () => {
+      try {
+        const analysis = await getCompetitiveAnalysis(productToAnalyze, targetRegion);
+        setCompetitiveResult(analysis);
+        setAnalysisCache(prev => ({ ...prev, [cacheKey]: analysis }));
+        
+        // Scroll to analysis
+        setTimeout(() => {
+          const element = document.getElementById('competitive-analysis-result');
+          element?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } catch (error) {
+        console.error("Error in competitive analysis:", error);
+        showErrorToast(error);
+      } finally {
+        setAnalyzingCompetitors(false);
+      }
+    };
+
+    if (!isProAccount) {
+      startAdTimer(performAnalysis);
+      return;
     }
+
+    performAnalysis();
   };
 
   const handleRateResult = async (id: string, rating: 'up' | 'down') => {
@@ -1078,7 +1089,7 @@ function MainApp() {
                       disabled={adCountdown > 0}
                       onClick={() => {
                         setShowAdModal(false);
-                        performSearch();
+                        if (adCallback) adCallback();
                       }}
                       className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
                     >
