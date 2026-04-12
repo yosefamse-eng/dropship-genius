@@ -56,7 +56,8 @@ export async function getCompetitiveAnalysis(productName: string, region: string
     {
       "mainAnalysis": "Markdown profesional con los puntos 1 al 8",
       "trafficAnalysis": "Markdown o tabla con el punto 9 (Tráfico Web)",
-      "socialEngagement": "Markdown o tabla con el punto 10 (Engagement Social)"
+      "socialEngagement": "Markdown o tabla con el punto 10 (Engagement Social)",
+      "supplierAnalysis": "Markdown o tabla con el punto 11 (Análisis de Proveedores)"
     }
 
     Puntos a cubrir:
@@ -74,6 +75,11 @@ export async function getCompetitiveAnalysis(productName: string, region: string
     8. **Oportunidad de Diferenciación**: Cómo puede un nuevo vendedor destacar frente a la competencia actual en ${region}.
     9. **Análisis de Tráfico Web de Competidores**: Estimación del tráfico mensual de los 3 principales competidores, fuentes de tráfico (Directo, Social, Búsqueda, Referidos) y tasa de rebote estimada.
     10. **Engagement en Redes Sociales**: Análisis de la frecuencia de publicación, tipos de contenido con más interacción (likes, comentarios, compartidos) y crecimiento de seguidores de los competidores líderes.
+    11. **Análisis de Proveedores Potenciales**: Identifica 3-5 proveedores potenciales (ej: AliExpress, CJ Dropshipping, Alibaba). Para cada uno, incluye:
+        - **Coste Estimado por Unidad**: Rango de precios al por mayor.
+        - **Tiempos de Envío**: Estimación para la región ${region}.
+        - **Puntuación de Fiabilidad**: Una calificación de 1 a 10 basada en valoraciones y antigüedad.
+        - **Ventajas/Desventajas**: Breve comparación.
     
     Devuelve SOLO el JSON, sin bloques de código ni texto adicional. Asegúrate de que el JSON sea válido.`;
 

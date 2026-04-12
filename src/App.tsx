@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings, BarChart3 } from 'lucide-react';
+import { Search, TrendingUp, DollarSign, Target, Rocket, Loader2, Sparkles, ShoppingBag, CheckCircle2, LogIn, LogOut, User as UserIcon, History, X, Clock, Share2, Copy, Check, Bell, Settings, BarChart3, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import { getProductRecommendations, getCompetitiveAnalysis } from './services/geminiService';
@@ -1864,6 +1864,20 @@ function MainApp() {
                             </div>
                             <div className="prose prose-slate max-w-none bg-slate-50 p-6 rounded-2xl border border-slate-100">
                               <MemoizedMarkdown content={competitiveResult.socialEngagement} />
+                            </div>
+                          </div>
+                        )}
+
+                        {competitiveResult.supplierAnalysis && (
+                          <div className="mt-8">
+                            <div className="flex items-center gap-3 mb-6">
+                              <div className="bg-emerald-100 p-2 rounded-lg">
+                                <Truck className="w-5 h-5 text-emerald-600" />
+                              </div>
+                              <h5 className="text-xl font-black text-slate-900">Análisis de Proveedores Potenciales</h5>
+                            </div>
+                            <div className="prose prose-slate max-w-none bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                              <MemoizedMarkdown content={competitiveResult.supplierAnalysis} />
                             </div>
                           </div>
                         )}
