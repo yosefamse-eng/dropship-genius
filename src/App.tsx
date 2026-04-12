@@ -1484,37 +1484,12 @@ function MainApp() {
                   className="relative flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8 pb-10 border-b border-slate-100/50"
                 >
                   <div className="flex items-center gap-6">
-                    {result.products && result.products.length > 0 ? (
-                      <motion.div 
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        whileHover={{ y: -4 }}
-                        className="relative w-28 h-28 md:w-32 md:h-32 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 bg-slate-100 group cursor-pointer"
-                      >
-                        <img 
-                          src={result.products[0].imageUrl || `https://loremflickr.com/400/400/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`}
-                          alt={result.products[0].name}
-                          className="w-full h-full object-cover opacity-0 transition-all duration-700 group-hover:scale-115"
-                          referrerPolicy="no-referrer"
-                          onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
-                          onError={(e) => {
-                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(result.products[0].name)}/400/400`;
-                            e.currentTarget.classList.remove('opacity-0');
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-600/40 to-transparent" />
-                        <div className="absolute top-1 left-1 right-1 bg-brand-600 text-white text-[8px] font-black uppercase tracking-tighter text-center py-0.5 rounded-full shadow-lg">
-                          GANADOR
-                        </div>
-                      </motion.div>
-                    ) : (
-                      <motion.div 
-                        whileHover={{ scale: 1.05, rotate: 5 }}
-                        className="bg-gradient-to-br from-brand-600 to-indigo-800 p-5 rounded-[2rem] shadow-2xl shadow-brand-200"
-                      >
-                        <TrendingUp className="w-10 h-10 text-white" />
-                      </motion.div>
-                    )}
+                    <motion.div 
+                      whileHover={{ scale: 1.05, rotate: 5 }}
+                      className="bg-gradient-to-br from-brand-600 to-indigo-800 p-5 rounded-[2rem] shadow-2xl shadow-brand-200"
+                    >
+                      <TrendingUp className="w-10 h-10 text-white" />
+                    </motion.div>
                     <div>
                       <div className="flex flex-wrap gap-2 mb-3">
                         <span className="px-4 py-1.5 rounded-full bg-brand-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
@@ -1565,41 +1540,23 @@ function MainApp() {
                       transition={{ delay: 0.1 * idx }}
                       className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-brand-100 transition-all duration-500"
                     >
-                      <div className="relative h-72 overflow-hidden bg-slate-200 group-hover:bg-slate-300 transition-colors">
-                        {/* Subtle Inner Border/Ring */}
-                        <div className="absolute inset-0 z-10 border-[6px] border-white/10 pointer-events-none" />
-                        
-                        <img 
-                          key={product.name}
-                          src={product.imageUrl || `https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`} 
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-110 group-hover:brightness-105 transition-all duration-1000 ease-out opacity-0"
-                          referrerPolicy="no-referrer"
-                          loading="lazy"
-                          decoding="async"
-                          onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
-                          onError={(e) => {
-                            e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(product.name)}/800/600`;
-                            e.currentTarget.classList.remove('opacity-0');
-                          }}
-                        />
-
-                        {/* Subtle Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
-
-                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xl px-4 py-2 rounded-2xl flex items-center gap-2 shadow-2xl border border-white/50 z-20">
-                          <TrendingUp className="w-4 h-4 text-brand-600" />
-                          <span className="text-xs font-black text-slate-900">{product.trendLevel}/10</span>
+                      <div className="p-8 flex-1 flex flex-col">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-2xl font-black text-slate-900 line-clamp-1 tracking-tight">{product.name}</h3>
+                          <div className="bg-slate-100 px-3 py-1 rounded-xl flex items-center gap-2 border border-slate-200">
+                            <TrendingUp className="w-3 h-3 text-brand-600" />
+                            <span className="text-[10px] font-black text-slate-900">{product.trendLevel}/10</span>
+                          </div>
                         </div>
                         
                         {idx === 0 && (
-                          <div className="absolute top-4 left-4 bg-brand-600/95 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-2xl border border-brand-400/30 z-20">
-                            TOP #1
+                          <div className="mb-4">
+                            <span className="bg-brand-600 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-sm">
+                              RECOMENDACIÓN #1
+                            </span>
                           </div>
                         )}
-                      </div>
-                      <div className="p-8 flex-1 flex flex-col">
-                        <h3 className="text-2xl font-black text-slate-900 mb-3 line-clamp-1 tracking-tight">{product.name}</h3>
+
                         <p className="text-slate-700 text-base mb-6 line-clamp-3 leading-relaxed font-medium">{product.summary}</p>
                         
                         <div className="mt-auto space-y-5">
@@ -1812,23 +1769,11 @@ function MainApp() {
                           animate={{ opacity: 1, scale: 1 }}
                           className="mb-10 relative group"
                         >
-                          <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800">
-                            <img 
-                              key={productToAnalyze}
-                              src={`https://loremflickr.com/800/600/${(productKeywordToAnalyze || productToAnalyze).replace(/\s+/g, ',')}`} 
-                              alt={productToAnalyze}
-                              className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                              referrerPolicy="no-referrer"
-                              loading="lazy"
-                              decoding="async"
-                              onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
-                              onError={(e) => {
-                                e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}/800/600`;
-                                e.currentTarget.classList.remove('opacity-0');
-                              }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                            <div className="absolute bottom-6 left-6">
+                          <div className="flex items-center gap-6 bg-slate-800 p-8 rounded-3xl border border-white/10 shadow-2xl">
+                            <div className="bg-brand-600 p-4 rounded-2xl shadow-xl">
+                              <Target className="w-8 h-8 text-white" />
+                            </div>
+                            <div className="flex-1">
                               <span className="text-[10px] font-black text-brand-400 uppercase tracking-[0.3em] mb-1 block">Producto Seleccionado</span>
                               <h4 className="text-2xl font-black text-white">{productToAnalyze}</h4>
                             </div>
@@ -1837,9 +1782,9 @@ function MainApp() {
                                 setProductToAnalyze('');
                                 setProductKeywordToAnalyze('');
                               }}
-                              className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-red-500/20 backdrop-blur-md rounded-xl text-white transition-colors border border-white/10"
+                              className="p-3 bg-white/10 hover:bg-red-500/20 backdrop-blur-md rounded-2xl text-white transition-all border border-white/10"
                             >
-                              <X className="w-5 h-5" />
+                              <X className="w-6 h-6" />
                             </button>
                           </div>
                         </motion.div>
@@ -1920,69 +1865,14 @@ function MainApp() {
                         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full -mr-48 -mt-48 blur-[100px] pointer-events-none" />
                         
                         <div className="relative z-10 mb-12">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                            <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200 group cursor-zoom-in">
-                              <img 
-                                key={`${productToAnalyze}-main`}
-                                src={`https://loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze)}`} 
-                                alt={productToAnalyze}
-                                className="w-full h-full object-cover opacity-0 transition-all duration-1000 group-hover:scale-110"
-                                referrerPolicy="no-referrer"
-                                loading="lazy"
-                                decoding="async"
-                                onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
-                                onError={(e) => {
-                                  e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-main/1200/800`;
-                                  e.currentTarget.classList.remove('opacity-0');
-                                }}
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-                              <div className="absolute bottom-8 left-8 right-8">
-                                <div className="flex items-center gap-4">
-                                  <div className="bg-brand-600 p-4 rounded-2xl shadow-xl">
-                                    <Target className="w-8 h-8 text-white" />
-                                  </div>
-                                  <div>
-                                    <span className="text-[10px] font-black text-brand-200 uppercase tracking-[0.3em] mb-1 block">Informe de Inteligencia</span>
-                                    <h4 className="text-3xl font-black text-white tracking-tight">Análisis: {productToAnalyze}</h4>
-                                  </div>
-                                </div>
-                              </div>
+                          <div className="flex items-center gap-6 mb-12 bg-slate-900 p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+                            <div className="bg-brand-600 p-5 rounded-3xl shadow-2xl shadow-brand-500/20">
+                              <Target className="w-10 h-10 text-white" />
                             </div>
-                              <div className="grid grid-rows-2 gap-6">
-                                <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200">
-                                  <img 
-                                    key={`${productToAnalyze}-side1`}
-                                    src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},detail`} 
-                                    alt={productToAnalyze}
-                                    className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
-                                    referrerPolicy="no-referrer"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
-                                    onError={(e) => {
-                                      e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side1/600/600`;
-                                      e.currentTarget.classList.remove('opacity-0');
-                                    }}
-                                  />
-                                </div>
-                                <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200">
-                                  <img 
-                                    key={`${productToAnalyze}-side2`}
-                                    src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},usage`} 
-                                    alt={productToAnalyze}
-                                    className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
-                                    referrerPolicy="no-referrer"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
-                                    onError={(e) => {
-                                      e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side2/600/600`;
-                                      e.currentTarget.classList.remove('opacity-0');
-                                    }}
-                                  />
-                                </div>
-                              </div>
+                            <div>
+                              <span className="text-brand-400 text-xs font-black uppercase tracking-[0.4em] mb-2 block">Informe de Inteligencia</span>
+                              <h4 className="text-4xl font-black text-white tracking-tighter">Análisis: {productToAnalyze}</h4>
+                            </div>
                           </div>
                         </div>
                         
