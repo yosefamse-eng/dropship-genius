@@ -1492,12 +1492,14 @@ function MainApp() {
                         className="relative w-28 h-28 md:w-32 md:h-32 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 bg-slate-100"
                       >
                         <img 
-                          src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/200/200/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`)}&output=webp&q=80`}
+                          src={`https://loremflickr.com/200/200/${(result.products[0].searchKeyword || result.products[0].name).replace(/\s+/g, ',')}`}
                           alt={result.products[0].name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
                           referrerPolicy="no-referrer"
+                          onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                           onError={(e) => {
                             e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(result.products[0].name)}/200/200`;
+                            e.currentTarget.classList.remove('opacity-0');
                           }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-brand-600/40 to-transparent" />
@@ -1563,17 +1565,19 @@ function MainApp() {
                       transition={{ delay: 0.1 * idx }}
                       className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-brand-100 transition-all duration-500"
                     >
-                      <div className="relative h-64 overflow-hidden bg-slate-100">
+                      <div className="relative h-64 overflow-hidden bg-slate-200 group-hover:bg-slate-300 transition-colors">
                         <img 
                           key={product.name}
-                          src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`)}&output=webp&q=80`} 
+                          src={`https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`} 
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-0 transition-opacity duration-500"
                           referrerPolicy="no-referrer"
                           loading="lazy"
                           decoding="async"
+                          onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                           onError={(e) => {
                             e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(product.name)}/800/600`;
+                            e.currentTarget.classList.remove('opacity-0');
                           }}
                         />
                         <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg border border-white/20">
@@ -1800,19 +1804,19 @@ function MainApp() {
                           animate={{ opacity: 1, scale: 1 }}
                           className="mb-10 relative group"
                         >
-                          <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800 animate-pulse-slow">
+                          <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800">
                             <img 
                               key={productToAnalyze}
-                              src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/800/600/${(productKeywordToAnalyze || productToAnalyze).replace(/\s+/g, ',')}`)}&output=webp&q=80`} 
+                              src={`https://loremflickr.com/800/600/${(productKeywordToAnalyze || productToAnalyze).replace(/\s+/g, ',')}`} 
                               alt={productToAnalyze}
-                              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                              className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                               referrerPolicy="no-referrer"
                               loading="lazy"
                               decoding="async"
-                              onLoad={(e) => e.currentTarget.parentElement?.classList.remove('animate-pulse-slow')}
+                              onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                               onError={(e) => {
-                                e.currentTarget.src = `https://placehold.co/800x600/1e293b/94a3b8?text=${encodeURIComponent(productToAnalyze)}`;
-                                e.currentTarget.parentElement?.classList.remove('animate-pulse-slow');
+                                e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}/800/600`;
+                                e.currentTarget.classList.remove('opacity-0');
                               }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
@@ -1912,14 +1916,16 @@ function MainApp() {
                             <div className="md:col-span-2 relative h-[32rem] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-200">
                               <img 
                                 key={`${productToAnalyze}-main`}
-                                src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze)}`)}&output=webp&q=80`} 
+                                src={`https://loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze)}`} 
                                 alt={productToAnalyze}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
                                 referrerPolicy="no-referrer"
                                 loading="lazy"
                                 decoding="async"
+                                onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                                 onError={(e) => {
                                   e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-main/1200/800`;
+                                  e.currentTarget.classList.remove('opacity-0');
                                 }}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
@@ -1939,28 +1945,32 @@ function MainApp() {
                                 <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200">
                                   <img 
                                     key={`${productToAnalyze}-side1`}
-                                    src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},detail`)}&output=webp&q=80`} 
+                                    src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},detail`} 
                                     alt={productToAnalyze}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
                                     referrerPolicy="no-referrer"
                                     loading="lazy"
                                     decoding="async"
+                                    onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                                     onError={(e) => {
                                       e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side1/600/600`;
+                                      e.currentTarget.classList.remove('opacity-0');
                                     }}
                                   />
                                 </div>
                                 <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 shadow-xl bg-slate-200">
                                   <img 
                                     key={`${productToAnalyze}-side2`}
-                                    src={`https://images.weserv.nl/?url=${encodeURIComponent(`loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},usage`)}&output=webp&q=80`} 
+                                    src={`https://loremflickr.com/600/600/${encodeURIComponent(productToAnalyze)},usage`} 
                                     alt={productToAnalyze}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
                                     referrerPolicy="no-referrer"
                                     loading="lazy"
                                     decoding="async"
+                                    onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
                                     onError={(e) => {
                                       e.currentTarget.src = `https://picsum.photos/seed/${encodeURIComponent(productToAnalyze)}-side2/600/600`;
+                                      e.currentTarget.classList.remove('opacity-0');
                                     }}
                                   />
                                 </div>
