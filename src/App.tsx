@@ -1537,7 +1537,7 @@ function MainApp() {
                     >
                       <div className="relative h-64 overflow-hidden">
                         <img 
-                          src={`https://loremflickr.com/800/600/${encodeURIComponent(product.name)}`} 
+                          src={`https://loremflickr.com/800/600/${encodeURIComponent(product.name + ' product')}`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
@@ -1570,16 +1570,21 @@ function MainApp() {
                   ))}
                 </div>
 
-                <div className="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden mb-12">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                <div className="bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 rounded-[3rem] p-10 md:p-16 text-white relative overflow-hidden mb-12 border border-white/10 shadow-2xl">
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/20 rounded-full -mr-48 -mt-48 blur-[120px]" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/10 rounded-full -ml-32 -mb-32 blur-[100px]" />
+                  
                   <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="bg-brand-500 p-3 rounded-2xl">
-                        <Sparkles className="w-6 h-6 text-white" />
+                    <div className="flex items-center gap-6 mb-8">
+                      <div className="bg-gradient-to-br from-brand-400 to-brand-600 p-5 rounded-3xl shadow-2xl shadow-brand-500/20">
+                        <Sparkles className="w-10 h-10 text-white" />
                       </div>
-                      <h3 className="text-2xl font-black tracking-tight">Consejo Maestro</h3>
+                      <div>
+                        <span className="text-brand-400 text-xs font-black uppercase tracking-[0.4em] mb-2 block">Estrategia de Élite</span>
+                        <h3 className="text-4xl md:text-5xl font-black tracking-tighter">Consejo Maestro</h3>
+                      </div>
                     </div>
-                    <div className="prose prose-invert max-w-none text-white text-xl leading-relaxed font-black">
+                    <div className="prose prose-invert max-w-none text-white text-2xl leading-relaxed font-black border-l-4 border-brand-500 pl-8 py-2">
                       <MemoizedMarkdown content={result.masterTip} />
                     </div>
                   </div>
@@ -1821,17 +1826,26 @@ function MainApp() {
                       >
                         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full -mr-48 -mt-48 blur-[100px] pointer-events-none" />
                         
-                        <div className="relative z-10 flex items-center gap-6 mb-12 pb-8 border-b border-slate-100">
-                          <motion.div 
-                            animate={{ y: [0, -5, 0] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                            className="bg-brand-600 p-4 rounded-2xl shadow-xl shadow-brand-200"
-                          >
-                            <Target className="w-8 h-8 text-white" />
-                          </motion.div>
-                          <div>
-                            <span className="text-[10px] font-black text-brand-600 uppercase tracking-[0.3em] mb-1 block">Informe de Inteligencia</span>
-                            <h4 className="text-3xl font-black text-slate-900 tracking-tight">Análisis: {productToAnalyze}</h4>
+                        <div className="relative z-10 mb-12">
+                          <div className="relative w-full h-96 rounded-[3rem] overflow-hidden mb-12 border border-white/10 shadow-2xl">
+                            <img 
+                              src={`https://loremflickr.com/1200/800/${encodeURIComponent(productToAnalyze + ' product')}`} 
+                              alt={productToAnalyze}
+                              className="w-full h-full object-cover"
+                              referrerPolicy="no-referrer"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                            <div className="absolute bottom-8 left-8 right-8">
+                              <div className="flex items-center gap-4">
+                                <div className="bg-brand-600 p-4 rounded-2xl shadow-xl">
+                                  <Target className="w-8 h-8 text-white" />
+                                </div>
+                                <div>
+                                  <span className="text-[10px] font-black text-brand-200 uppercase tracking-[0.3em] mb-1 block">Informe de Inteligencia</span>
+                                  <h4 className="text-3xl font-black text-white tracking-tight">Análisis: {productToAnalyze}</h4>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         
