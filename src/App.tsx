@@ -19,8 +19,8 @@ const ChatSupport = lazy(() => import('./components/ChatSupport'));
 // Memoized Markdown component to prevent unnecessary re-renders
 const MemoizedMarkdown = React.memo(({ content }: { content: string }) => (
   <div className="prose prose-slate max-w-none 
-    prose-headings:text-indigo-700 prose-headings:font-bold
-    prose-p:text-slate-700 prose-li:text-slate-700">
+    prose-headings:text-indigo-800 prose-headings:font-bold
+    prose-p:text-slate-900 prose-li:text-slate-900 prose-strong:text-slate-900">
     <Markdown>{content}</Markdown>
   </div>
 ));
@@ -1535,33 +1535,33 @@ function MainApp() {
                       transition={{ delay: 0.1 * idx }}
                       className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-brand-100 transition-all duration-500"
                     >
-                      <div className="relative h-48 overflow-hidden">
+                      <div className="relative h-64 overflow-hidden">
                         <img 
-                          src={`https://picsum.photos/seed/${product.name.replace(/\s+/g, '-')}/400/300`} 
+                          src={`https://picsum.photos/seed/${product.name.replace(/\s+/g, '-')}/800/600`} 
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                          <TrendingUp className="w-3 h-3 text-brand-600" />
-                          <span className="text-[10px] font-black text-slate-900">{product.trendLevel}/10</span>
+                        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg border border-white/20">
+                          <TrendingUp className="w-4 h-4 text-brand-600" />
+                          <span className="text-xs font-black text-slate-900">{product.trendLevel}/10</span>
                         </div>
                       </div>
-                      <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-xl font-black text-slate-900 mb-2 line-clamp-1">{product.name}</h3>
-                        <p className="text-slate-500 text-sm mb-4 line-clamp-3 leading-relaxed">{product.summary}</p>
+                      <div className="p-8 flex-1 flex flex-col">
+                        <h3 className="text-2xl font-black text-slate-900 mb-3 line-clamp-1 tracking-tight">{product.name}</h3>
+                        <p className="text-slate-700 text-base mb-6 line-clamp-3 leading-relaxed font-medium">{product.summary}</p>
                         
-                        <div className="mt-auto space-y-4">
-                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            <span>Margen: <span className="text-emerald-600">{product.estimatedMargin}</span></span>
-                            <span>Fit: <span className="text-indigo-600">{product.channelFit}/10</span></span>
+                        <div className="mt-auto space-y-5">
+                          <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest text-slate-500">
+                            <span>Margen: <span className="text-emerald-700">{product.estimatedMargin}</span></span>
+                            <span>Fit: <span className="text-indigo-700">{product.channelFit}/10</span></span>
                           </div>
                           
                           <button 
                             onClick={() => handleAnalyzeProduct(product.name)}
-                            className="w-full py-3 bg-slate-50 hover:bg-brand-600 text-slate-600 hover:text-white rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 group/btn"
+                            className="w-full py-4 bg-slate-900 hover:bg-brand-600 text-white rounded-2xl font-black text-xs tracking-widest transition-all flex items-center justify-center gap-3 group/btn shadow-xl shadow-slate-200 hover:shadow-brand-200"
                           >
-                            <Target className="w-4 h-4" />
+                            <Target className="w-5 h-5" />
                             ANALIZAR COMPETENCIA
                           </button>
                         </div>
