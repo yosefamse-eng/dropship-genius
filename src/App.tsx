@@ -1565,12 +1565,15 @@ function MainApp() {
                       transition={{ delay: 0.1 * idx }}
                       className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-brand-100 transition-all duration-500"
                     >
-                      <div className="relative h-64 overflow-hidden bg-slate-200 group-hover:bg-slate-300 transition-colors">
+                      <div className="relative h-72 overflow-hidden bg-slate-200 group-hover:bg-slate-300 transition-colors">
+                        {/* Subtle Inner Border/Ring */}
+                        <div className="absolute inset-0 z-10 border-[6px] border-white/10 pointer-events-none" />
+                        
                         <img 
                           key={product.name}
                           src={`https://loremflickr.com/800/600/${(product.searchKeyword || product.name).replace(/\s+/g, ',')}`} 
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-0 transition-opacity duration-500"
+                          className="w-full h-full object-cover group-hover:scale-110 group-hover:brightness-105 transition-all duration-1000 ease-out opacity-0"
                           referrerPolicy="no-referrer"
                           loading="lazy"
                           decoding="async"
@@ -1580,12 +1583,17 @@ function MainApp() {
                             e.currentTarget.classList.remove('opacity-0');
                           }}
                         />
-                        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg border border-white/20">
+
+                        {/* Subtle Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+
+                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xl px-4 py-2 rounded-2xl flex items-center gap-2 shadow-2xl border border-white/50 z-20">
                           <TrendingUp className="w-4 h-4 text-brand-600" />
                           <span className="text-xs font-black text-slate-900">{product.trendLevel}/10</span>
                         </div>
+                        
                         {idx === 0 && (
-                          <div className="absolute top-4 left-4 bg-brand-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                          <div className="absolute top-4 left-4 bg-brand-600/95 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-2xl border border-brand-400/30 z-20">
                             TOP #1
                           </div>
                         )}
