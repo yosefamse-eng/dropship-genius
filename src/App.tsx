@@ -1755,6 +1755,34 @@ function MainApp() {
                         Desbloquea el desglose detallado de precios, palabras clave de alta conversión, volumen de búsqueda real y estrategias de creativos publicitarios.
                       </p>
 
+                      {productToAnalyze && (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="mb-10 relative group"
+                        >
+                          <div className="relative h-48 md:h-64 w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                            <img 
+                              src={`https://loremflickr.com/800/400/${encodeURIComponent(productToAnalyze + ' product')}`} 
+                              alt={productToAnalyze}
+                              className="w-full h-full object-cover"
+                              referrerPolicy="no-referrer"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                            <div className="absolute bottom-6 left-6">
+                              <span className="text-[10px] font-black text-brand-400 uppercase tracking-[0.3em] mb-1 block">Producto Seleccionado</span>
+                              <h4 className="text-2xl font-black text-white">{productToAnalyze}</h4>
+                            </div>
+                            <button 
+                              onClick={() => setProductToAnalyze('')}
+                              className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-red-500/20 backdrop-blur-md rounded-xl text-white transition-colors border border-white/10"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+
                       <form onSubmit={handleCompetitiveAnalysis} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-3">
